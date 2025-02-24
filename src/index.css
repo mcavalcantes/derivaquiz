@@ -1,8 +1,49 @@
 @import "tailwindcss";
 
 :root {
+  --background: #fafafa;
+  --text: #1a1a1a;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+  src: url("./assets/fonts/Inter-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: bold;
+  font-display: swap;
+  src: url("./assets/fonts/Inter-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: italic;
+  font-weight: normal;
+  font-display: swap;
+  src: url("./assets/fonts/Inter-Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: italic;
+  font-weight: bold;
+  font-display: swap;
+  src: url("./assets/fonts/Inter-BoldItalic.woff2") format("woff2");
+}
+
+html {
+  font-family: 'Inter', sans-serif;
+  background: var(--background);
+  color: var(--text);
 }
