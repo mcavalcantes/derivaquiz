@@ -43,6 +43,22 @@
   src: url("./assets/fonts/Inter-BoldItalic.woff2") format("woff2");
 }
 
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./assets/fonts/Inter-SemiBold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./assets/fonts/Inter-SemiBoldItalic.woff2") format("woff2");
+}
+
 html {
   font-family: 'Inter', sans-serif;
   background: var(--background);
