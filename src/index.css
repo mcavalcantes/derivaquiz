@@ -3,6 +3,7 @@
 :root {
   --background: #fafafa;
   --text: #1a1a1a;
+  --border: #999999;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
