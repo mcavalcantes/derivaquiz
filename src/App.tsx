@@ -18,17 +18,12 @@ export function App() {
         <a
           href="mailto:matheuscavalcantes.mc@gmail.com"
           className="font-semibold text-sm underline underline-offset-2"
-        >
-          Contato
-        </a>
-        <p>|</p>
+        >Contato</a>
+        <p>{`|`}</p>
         <a
           href="https://github.com/mcavalcantes/derivaquiz"
           className="flex items-center gap-2 font-semibold text-sm underline underline-offset-2"
-        >
-          <Github />
-          <p>Repositório</p>
-        </a>
+        ><Github /><p>Repositório</p></a>
       </footer>
     </div>
   );

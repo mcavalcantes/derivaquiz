@@ -5,6 +5,9 @@
   --text: #1a1a1a;
   --border: #999999;
 
+  --feedback-correct: #7CCE00;
+  --feedback-incorrect: #FB2C36;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -60,7 +63,7 @@
 }
 
 html {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   background: var(--background);
   color: var(--text);
 }
