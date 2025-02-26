@@ -15,7 +15,7 @@ export function Answer({ expression }: { expression?: string }) {
 
   return (
     <button ref={answerRef} className="
-      select-none cursor-pointer bg-white h-20 flex items-center justify-center
+      select-none cursor-pointer bg-[var(--foreground)] h-20 flex items-center justify-center
       border rounded border-[var(--border)] outline-none hover:ring ring-[var(--border)] transition
     "/>
   );

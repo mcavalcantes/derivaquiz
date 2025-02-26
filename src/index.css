@@ -1,9 +1,11 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #fafafa;
   --text: #1a1a1a;
   --border: #999999;
+  --foreground: #ffffff;
 
   --feedback-correct: #7CCE00;
   --feedback-incorrect: #FB2C36;
@@ -12,6 +14,13 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.dark {
+  --background: #1a1a1a;
+  --text: #fafafa;
+  --border: #666666;
+  --foreground: #333333;
 }
 
 @font-face {

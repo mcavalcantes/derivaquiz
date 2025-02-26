@@ -15,7 +15,7 @@ export function Display({ expression }: { expression?: string }) {
 
   return (
     <div ref={displayRef} className="
-      select-none bg-white h-56 flex items-center justify-center border rounded border-[var(--border)]
+      select-none bg-[var(--foreground)] h-56 flex items-center justify-center border rounded border-[var(--border)]
     "/>
   );
 }
