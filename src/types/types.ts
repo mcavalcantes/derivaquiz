@@ -1,7 +1,9 @@
-export interface Object {
+export interface Answer {
+  content: string;
+  correct: boolean;
+}
+
+export interface Response {
   question: string;
-  answers: Array<{
-    content: string;
-    correct: boolean;
-  }>;
+  answers: Array<Answer>;
 }

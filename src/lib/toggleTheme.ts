@@ -1,4 +1,4 @@
-export function toggleTheme(setTheme: (theme: string) => void) {
+export function toggleTheme(setTheme: React.Dispatch<React.SetStateAction<string>>) {
   const theme = localStorage.getItem("theme");
 
   if (theme === "dark") {
