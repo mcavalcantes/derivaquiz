@@ -4,11 +4,9 @@
 :root {
   --background: #fafafa;
   --text: #1a1a1a;
-  --border: #999999;
+  --border: #b3b3b3;
   --foreground: #ffffff;
-
-  --feedback-correct: #7CCE00;
-  --feedback-incorrect: #FB2C36;
+  --ring: #808080;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -18,9 +16,10 @@
 
 .dark {
   --background: #1a1a1a;
-  --text: #fafafa;
-  --border: #666666;
+  --text: #e6e6e6;
+  --border: #4d4d4d;
   --foreground: #333333;
+  --ring: #666666;
 }
 
 @font-face {

@@ -57,6 +57,7 @@ export function App() {
         <button className="xl:hidden p-0.5 cursor-pointer border border-[var(--border)] rounded">
           <Cog />
         </button>
+        <button onClick={generate}>doase</button>
         <button
           onClick={() => toggleTheme(setTheme)}
           className="p-0.5 cursor-pointer border border-[var(--border)] rounded"
