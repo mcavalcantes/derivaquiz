@@ -11,7 +11,7 @@ import { Github } from "./icons/iconmonstr/Github";
 
 import { getRandomQuestion } from "./lib/getRandomQuestion";
 import { getQuestion } from "./lib/getQuestion";
-import { toggleTheme } from "./lib/toggleTheme";
+import { togglePageTheme } from "./lib/togglePageTheme";
 import { createQueryString } from "./lib/createQueryString";
 import type { Response } from "./types/types";
 import type { FormData } from "./types/types";
@@ -22,7 +22,7 @@ export function App() {
 
   const [dropdown, setDropdown] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
-    params: {
+    queryParams: {
       limit: true,
       derivative: true,
       integral: true,
@@ -32,10 +32,10 @@ export function App() {
       legendary: false,
     },
     autoskip: true,
-    autoskipDelay: 2.0,
+    autoskipDelay: 2000,
   });
 
-  const [queryString, setQueryString] = useState<string>(createQueryString(formData.params));
+  const [queryString, setQueryString] = useState<string>(createQueryString(formData.queryParams));
 
   async function refreshQuestion() {
     const json = await getQuestion(queryString);
@@ -59,7 +59,7 @@ export function App() {
           className="xl:hidden p-0.5 cursor-pointer border border-[var(--border)] rounded"
         ><Cog /></button>
         <button
-          onClick={() => toggleTheme(setTheme)}
+          onClick={() => togglePageTheme(setTheme)}
           className="p-0.5 cursor-pointer border border-[var(--border)] rounded"
         >{theme === "dark" ? <Sun /> : <Moon />}</button>
         {dropdown &&
@@ -82,7 +82,7 @@ export function App() {
         />
       </div>
       <main className="flex flex-col gap-4 px-8 md:px-40 xl:px-100">
-        <Display expression={response?.question} />
+        <Display expression={response?.question.content} />
         <ul className="grid gap-4">
           {response?.answers.map(item => (
             <li key={item.id}>

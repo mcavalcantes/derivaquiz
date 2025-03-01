@@ -21,14 +21,14 @@ export function MobileForm({
     } else {
       newFormData = ({
         ...formData,
-        params: {
-          ...formData.params,
+        queryParams: {
+          ...formData.queryParams,
           [name]: checked,
         },
       });
     }
 
-    const queryString = createQueryString(newFormData.params);
+    const queryString = createQueryString(newFormData.queryParams);
 
     setQueryString(queryString);
     setFormData(newFormData);
@@ -44,7 +44,7 @@ export function MobileForm({
               name="limit"
               type="checkbox"
               onChange={handleChange}
-              checked={formData.params.limit}
+              checked={formData.queryParams.limit}
             />
             <label htmlFor="limit">Limites</label>
           </div>
@@ -53,7 +53,7 @@ export function MobileForm({
               name="derivative"
               type="checkbox"
               onChange={handleChange}
-              checked={formData.params.derivative}
+              checked={formData.queryParams.derivative}
             />
             <label htmlFor="derivative">Derivadas</label>
           </div>
@@ -62,7 +62,7 @@ export function MobileForm({
               name="integral"
               type="checkbox"
               onChange={handleChange}
-              checked={formData.params.integral}
+              checked={formData.queryParams.integral}
             />
             <label htmlFor="integral">Integrais</label>
           </div>
@@ -76,7 +76,7 @@ export function MobileForm({
               name="easy"
               type="checkbox"
               onChange={handleChange}
-              checked={formData.params.easy}
+              checked={formData.queryParams.easy}
             />
             <label htmlFor="easy">Fáceis 😎</label>
           </div>
@@ -85,7 +85,7 @@ export function MobileForm({
               name="medium"
               type="checkbox"
               onChange={handleChange}
-              checked={formData.params.medium}
+              checked={formData.queryParams.medium}
             />
             <label htmlFor="medium">Médias 🤔</label>
           </div>
@@ -94,7 +94,7 @@ export function MobileForm({
               name="hard"
               type="checkbox"
               onChange={handleChange}
-              checked={formData.params.hard}
+              checked={formData.queryParams.hard}
             />
             <label htmlFor="hard">Difíceis 🤯</label>
           </div>
@@ -103,7 +103,7 @@ export function MobileForm({
               name="legendary"
               type="checkbox"
               onChange={handleChange}
-              checked={formData.params.legendary}
+              checked={formData.queryParams.legendary}
             />
             <label htmlFor="legendary">Lendárias 💀</label>
           </div>

@@ -6,7 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DerivaQuiz</title>
     <script>
-      if (!localStorage.getItem("theme")) localStorage.setItem("theme", "light");
+      const userPreferences = localStorage.getItem("userPreferences");
+      if (!userPreferences) {
+        localStorage.setItem("userPreferences", JSON.stringify({
+          pageTheme: "light",
+          formData: {
+            autoskip: true,
+            autoskipDelay: 2000,
+            queryParams: {
+              limit: true,
+              derivative: true,
+              integral: true,
+              easy: true,
+              medium: true,
+              hard: false,
+              legendary: false,
+            },
+          },
+        }));
+      }
     </script>
   </head>
   <body>

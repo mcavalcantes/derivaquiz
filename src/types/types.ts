@@ -1,12 +1,12 @@
-export interface Answer {
-  id: number;
-  content: string;
-  correct: boolean;
+export interface UserPreferences {
+  pageTheme: string;
+  formData: FormData;
 }
 
-export interface Response {
-  question: string;
-  answers: Array<Answer>;
+export interface FormData {
+  autoskip: boolean;
+  autoskipDelay: number;
+  queryParams: QueryParams;
 }
 
 export interface QueryParams {
@@ -19,8 +19,18 @@ export interface QueryParams {
   legendary: boolean;
 }
 
-export interface FormData {
-  params: QueryParams;
-  autoskip: boolean;
-  autoskipDelay: number;
+export interface Response {
+  question: Question;
+  answers: Array<Answer>;
+}
+
+export interface Question {
+  id: number;
+  content: string;
+}
+
+export interface Answer {
+  id: number;
+  content: string;
+  correct: boolean;
 }

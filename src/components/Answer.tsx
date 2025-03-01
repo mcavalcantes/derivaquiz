@@ -24,20 +24,16 @@ export function Answer({
     btn.classList.remove("hover:ring");
 
     if (correct) {
-      btn.classList.add("ring-2");
-      btn.classList.add("ring-[var(--feedback-correct)]");
+      btn.classList.add("border-[var(--feedback-correct)", "ring-2", "ring-[var(--feedback-correct)]");
       setTimeout(() => {
-        btn.classList.remove("ring-2");
-        btn.classList.remove("ring-[var(--feedback-correct)]");
+        btn.classList.remove("border-[var(--feedback-correct)", "ring-2", "ring-[var(--feedback-correct)]");
         btn.classList.add("hover:ring");
         refresh();
       }, delay * 1000);
     } else {
-      btn.classList.add("ring-2");
-      btn.classList.add("ring-[var(--feedback-incorrect)]");
+      btn.classList.add("border-[var(--feedback-incorrect)", "ring-2", "ring-[var(--feedback-incorrect)]");
       setTimeout(() => {
-        btn.classList.remove("ring-2");
-        btn.classList.remove("ring-[var(--feedback-incorrect)]");
+        btn.classList.remove("border-[var(--feedback-incorrect)", "ring-2", "ring-[var(--feedback-incorrect)]");
         btn.classList.add("hover:ring");
         refresh();
       }, delay * 1000);
