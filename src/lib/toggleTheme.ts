@@ -1,7 +1,5 @@
 export function toggleTheme(setTheme: React.Dispatch<React.SetStateAction<string>>) {
-  const theme = localStorage.getItem("theme");
-
-  if (theme === "dark") {
+  if (localStorage.getItem("theme") === "dark") {
     document.documentElement.classList.remove("dark");
     localStorage.setItem("theme", "light");
     setTheme("light");

@@ -12,7 +12,7 @@ export function Display({ expression = "" }: { expression?: string }) {
   return (
     <div ref={divRef} className="
       select-none h-56 flex items-center justify-center
-      text-xl border rounded-md bg-[var(--foreground)] border-[var(--border)]
+      text-xl xl:text-2xl border rounded-md bg-[var(--foreground)] border-[var(--border)]
     "/>
   );
 }

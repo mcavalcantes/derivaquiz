@@ -10,7 +10,9 @@ import { Moon } from "./icons/heroicons/Moon";
 import { Github } from "./icons/iconmonstr/Github";
 
 import { getRandomQuestion } from "./lib/getRandomQuestion";
+import { getQuestion } from "./lib/getQuestion";
 import { toggleTheme } from "./lib/toggleTheme";
+import { createQueryString } from "./lib/createQueryString";
 import type { Response } from "./types/types";
 import type { FormData } from "./types/types";
 
@@ -30,8 +32,15 @@ export function App() {
       legendary: false,
     },
     autoskip: true,
-    autoskipDelay: 1.0,
+    autoskipDelay: 2.0,
   });
+
+  const [queryString, setQueryString] = useState<string>(createQueryString(formData.params));
+
+  async function refreshQuestion() {
+    const json = await getQuestion(queryString);
+    setResponse(json);
+  }
 
   useEffect(() => {
     async function initialize() {
@@ -58,6 +67,7 @@ export function App() {
             <MobileForm
               formData={formData}
               setFormData={setFormData}
+              setQueryString={setQueryString}
             />
           </div>
         }
@@ -68,12 +78,20 @@ export function App() {
         <DesktopForm 
           formData={formData}
           setFormData={setFormData}
+          setQueryString={setQueryString}
         />
       </div>
       <main className="flex flex-col gap-4 px-8 md:px-40 xl:px-100">
         <Display expression={response?.question} />
         <div className="grid gap-4">
-          {response?.answers.map(item => <Answer expression={item.content} correct={item.correct} />)}
+          {response?.answers.map(item => (
+            <Answer
+              expression={item.content}
+              correct={item.correct}
+              refresh={refreshQuestion}
+              delay={formData.autoskipDelay}
+            />
+          ))}
         </div>
       </main>
       <footer className="mt-auto h-16 select-none flex items-center justify-center gap-1 text-xs font-semibold">

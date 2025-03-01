@@ -8,6 +8,9 @@
   --foreground: #ffffff;
   --ring: #808080;
 
+  --feedback-correct: #00C950;
+  --feedback-incorrect: #FB2C36;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

@@ -8,16 +8,18 @@ export interface Response {
   answers: Array<Answer>;
 }
 
+export interface QueryParams {
+  limit: boolean;
+  derivative: boolean;
+  integral: boolean;
+  easy: boolean;
+  medium: boolean;
+  hard: boolean;
+  legendary: boolean;
+}
+
 export interface FormData {
-  params: {
-    limit: boolean,
-    derivative: boolean,
-    integral: boolean,
-    easy: boolean,
-    medium: boolean,
-    hard: boolean,
-    legendary: boolean,
-  };
+  params: QueryParams;
   autoskip: boolean;
   autoskipDelay: number;
 }

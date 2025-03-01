@@ -1,30 +1,37 @@
 import type { FormData } from "../types/types";
+import { createQueryString } from "../lib/createQueryString";
 
 export function DesktopForm({
   formData,
   setFormData,
+  setQueryString,
 }: {
   formData: FormData,
   setFormData: React.Dispatch<React.SetStateAction<FormData>>,
+  setQueryString: React.Dispatch<React.SetStateAction<string>>,
 }) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, checked, value } = e.target;
-
+    
+    let newFormData;
     if (name === "autoskip") {
-      setFormData(prevState => ({ ...prevState, [name]: checked }));
+      newFormData = ({ ...formData, [name]: checked });
     } else if (name === "autoskipDelay") {
-      setFormData(prevState => ({ ...prevState, [name]: Number.parseFloat(value) }));
+      newFormData = ({ ...formData, [name]: Number.parseFloat(value) });
     } else {
-      setFormData(prevState => ({
-        ...prevState,
+      newFormData = ({
+        ...formData,
         params: {
-          ...prevState.params,
+          ...formData.params,
           [name]: checked,
         },
-      }));
+      });
     }
 
-    console.log(formData);
+    const queryString = createQueryString(newFormData.params);
+
+    setQueryString(queryString);
+    setFormData(newFormData);
   }
   
   return (
