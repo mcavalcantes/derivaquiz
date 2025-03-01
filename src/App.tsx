@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Display } from "./components/Display";
 import { Answer } from "./components/Answer";
 import { MobileForm } from "./components/MobileForm";
+import { DesktopForm } from "./components/DesktopForm";
 
 import { Cog } from "./icons/heroicons/Cog";
 import { Sun } from "./icons/heroicons/Sun";
@@ -61,6 +62,14 @@ export function App() {
           </div>
         }
       </header>
+      <div className="
+        debug hidden xl:flex flex-col absolute left-0 top-0 bottom-0 w-72 items-center
+      ">
+        <DesktopForm 
+          formData={formData}
+          setFormData={setFormData}
+        />
+      </div>
       <main className="flex flex-col gap-4 px-8 md:px-40 xl:px-100">
         <Display expression={response?.question} />
         <div className="grid gap-4">
