@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Display } from "./components/Display";
 import { Answer } from "./components/Answer";
+import { MobileForm } from "./components/MobileForm";
 
 import { Cog } from "./icons/heroicons/Cog";
 import { Sun } from "./icons/heroicons/Sun";
@@ -10,10 +11,26 @@ import { Github } from "./icons/iconmonstr/Github";
 import { getRandomQuestion } from "./lib/getRandomQuestion";
 import { toggleTheme } from "./lib/toggleTheme";
 import type { Response } from "./types/types";
+import type { FormData } from "./types/types";
 
 export function App() {
   const [theme, setTheme] = useState<string>(localStorage.getItem("theme")!);
   const [response, setResponse] = useState<Response | null>(null);
+
+  const [dropdown, setDropdown] = useState<boolean>(false);
+  const [formData, setFormData] = useState<FormData>({
+    params: {
+      limit: true,
+      derivative: true,
+      integral: true,
+      easy: true,
+      medium: true,
+      hard: true,
+      legendary: false,
+    },
+    autoskip: true,
+    autoskipDelay: 1.0,
+  });
 
   useEffect(() => {
     async function initialize() {
@@ -28,9 +45,21 @@ export function App() {
     <div className="min-h-screen flex flex-col">
       <header className="h-16 px-8 md:px-40 xl:px-100 flex items-center gap-2">
         <button
+          onClick={() => setDropdown(!dropdown)}
+          className="xl:hidden p-0.5 cursor-pointer border border-[var(--border)] rounded"
+        ><Cog /></button>
+        <button
           onClick={() => toggleTheme(setTheme)}
           className="p-0.5 cursor-pointer border border-[var(--border)] rounded"
         >{theme === "dark" ? <Sun /> : <Moon />}</button>
+        {dropdown &&
+          <div className="xl:hidden z-50 absolute left-0 right-0 top-16 px-8 md:px-40 bg-[var(--foreground)] shadow">
+            <MobileForm
+              formData={formData}
+              setFormData={setFormData}
+            />
+          </div>
+        }
       </header>
       <main className="flex flex-col gap-4 px-8 md:px-40 xl:px-100">
         <Display expression={response?.question} />
