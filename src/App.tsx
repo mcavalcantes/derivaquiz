@@ -83,16 +83,18 @@ export function App() {
       </div>
       <main className="flex flex-col gap-4 px-8 md:px-40 xl:px-100">
         <Display expression={response?.question} />
-        <div className="grid gap-4">
+        <ul className="grid gap-4">
           {response?.answers.map(item => (
-            <Answer
-              expression={item.content}
-              correct={item.correct}
-              refresh={refreshQuestion}
-              delay={formData.autoskipDelay}
-            />
+            <li key={item.id}>
+              <Answer
+                expression={item.content}
+                correct={item.correct}
+                refresh={refreshQuestion}
+                delay={formData.autoskipDelay}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       </main>
       <footer className="mt-auto h-16 select-none flex items-center justify-center gap-1 text-xs font-semibold">
         <a

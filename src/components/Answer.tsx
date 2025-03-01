@@ -46,7 +46,7 @@ export function Answer({
 
   return (
     <button ref={buttonRef} onClick={handleClick} className="
-      select-none cursor-pointer h-20 flex items-center justify-center
+      select-none cursor-pointer h-20 w-full flex items-center justify-center
       border rounded-md bg-[var(--foreground)] border-[var(--border)]
       xl:text-lg hover:ring transition
     "/>
