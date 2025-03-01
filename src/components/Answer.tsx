@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 
-export function Answer({ expression = "" }: { expression?: string }) {
+export function Answer({ expression = "", correct = false }: { expression?: string, correct?: boolean }) {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {

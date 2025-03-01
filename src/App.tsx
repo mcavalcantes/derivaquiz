@@ -63,7 +63,7 @@ export function App() {
         }
       </header>
       <div className="
-        debug hidden xl:flex flex-col absolute left-0 top-0 bottom-0 w-72 items-center
+        hidden xl:flex flex-col absolute left-0 top-0 bottom-0 w-72 items-center
       ">
         <DesktopForm 
           formData={formData}
@@ -73,7 +73,7 @@ export function App() {
       <main className="flex flex-col gap-4 px-8 md:px-40 xl:px-100">
         <Display expression={response?.question} />
         <div className="grid gap-4">
-          {response?.answers.map(item => <Answer expression={item.content} />)}
+          {response?.answers.map(item => <Answer expression={item.content} correct={item.correct} />)}
         </div>
       </main>
       <footer className="mt-auto h-16 select-none flex items-center justify-center gap-1 text-xs font-semibold">
