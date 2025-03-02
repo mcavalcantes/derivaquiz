@@ -100,13 +100,13 @@ export function App() {
         </button>
       </header>
       {mobileFormVisible && (
-        <div className="fixed inset-0 bg-stone-900/80 z-100 xl:hidden flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-stone-900/90 z-100 xl:hidden flex items-center justify-center p-4">
           <div className="bg-[var(--foreground)] rounded-lg p-4 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Menu</h2>
               <button 
                 onClick={() => setMobileFormVisible(false)}
-                className="px-2 py-1"
+                className="cursor-pointer size-8 flex items-center justify-center"
                 aria-label="Fechar menu"
               >
                 ✕
@@ -122,7 +122,11 @@ export function App() {
             <div className="mt-4 flex justify-end">
               <button
                 onClick={() => setMobileFormVisible(false)}
-                className="px-4 py-2 border border-[var(--border)] rounded font-semibold"
+                className="
+                  cursor-pointer px-4 py-2 font-semibold border border-gray-300 shadow shadow-gray-300 hover:bg-gray-100 transition
+                  dark:border-stone-400 dark:shadow-stone-900 dark:hover:bg-stone-600
+                  rounded-lg flex items-center justify-center
+                "
               >
                 Salvar
               </button>

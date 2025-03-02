@@ -4,12 +4,12 @@ import "katex/dist/katex.min.css";
 
 export function Answer({
   content = "",
-  correct,
+  correct = false,
   autoskipDelay,
   refreshQuestion,
 }: {
   content?: string,
-  correct: boolean
+  correct?: boolean
   autoskipDelay: number,
   refreshQuestion(): Promise<void>,
 }) {
