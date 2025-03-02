@@ -1,7 +1,20 @@
-import type { FormData } from "../types/types";
+import { useEffect } from "react";
 import { createQueryString } from "../lib/createQueryString";
+import type { FormData } from "../types/types";
 
-export function MobileForm({
+interface DelayOption {
+  value: number;
+  label: string;
+}
+
+const DELAY_OPTIONS: Array<DelayOption> = [
+  { value: 500, label: "0,5 segundo" },
+  { value: 1000, label: "1 segundo" },
+  { value: 2000, label: "2 segundos" },
+  { value: 4000, label: "4 segundos" },
+];
+
+export function Form({
   formData,
   setFormData,
   setQueryString,
@@ -10,163 +23,108 @@ export function MobileForm({
   setFormData: React.Dispatch<React.SetStateAction<FormData>>,
   setQueryString: React.Dispatch<React.SetStateAction<string>>,
 }) {
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, checked, value } = e.target;
-    
-    let newFormData;
+  useEffect(() => {
+    setQueryString(createQueryString(formData.queryParams));
+  }, [formData.queryParams, setQueryString]);
+
+  const handleCheckboxChange = (name: string, checked: boolean) => {
     if (name === "autoskip") {
-      newFormData = ({ ...formData, [name]: checked });
-    } else if (name === "autoskipDelay") {
-      newFormData = ({ ...formData, [name]: Number.parseFloat(value) });
+      setFormData((prev) => ({ ...prev, [name]: checked }));
     } else {
-      newFormData = ({
-        ...formData,
+      setFormData((prev) => ({
+        ...prev,
         queryParams: {
-          ...formData.queryParams,
+          ...prev.queryParams,
           [name]: checked,
         },
-      });
+      }));
     }
+  };
 
-    const queryString = createQueryString(newFormData.queryParams);
-
-    setQueryString(queryString);
-    setFormData(newFormData);
-  }
+  const handleRadioChange = (value: number) => {
+    setFormData((prev) => ({ ...prev, autoskipDelay: value }));
+  };
   
   return (
     <form className="py-8 flex flex-col gap-4">
-      <div>
-        <p className="text-lg font-semibold">Tipo</p>
+      <fieldset>
+        <legend className="text-lg font-semibold">Tipo</legend>
         <div className="flex flex-col gap-0.5 px-2">
-          <div className="flex gap-1">
-            <input
-              name="limit"
-              type="checkbox"
-              onChange={handleChange}
-              checked={formData.queryParams.limit}
-            />
-            <label htmlFor="limit">Limites</label>
-          </div>
-          <div className="flex gap-1">
-            <input
-              name="derivative"
-              type="checkbox"
-              onChange={handleChange}
-              checked={formData.queryParams.derivative}
-            />
-            <label htmlFor="derivative">Derivadas</label>
-          </div>
-          <div className="flex gap-1">
-            <input
-              name="integral"
-              type="checkbox"
-              onChange={handleChange}
-              checked={formData.queryParams.integral}
-            />
-            <label htmlFor="integral">Integrais</label>
-          </div>
+          {[
+            { name: "limit", label: "Limites" },
+            { name: "derivative", label: "Derivadas" },
+            { name: "integral", label: "Integrais" },
+          ].map(({ name, label }) => (
+            <div key={name} className="flex gap-1">
+              <input
+                id={name}
+                name={name}
+                type="checkbox"
+                onChange={(e) => handleCheckboxChange(name, e.target.checked)}
+                checked={formData.queryParams[name as keyof typeof formData.queryParams]}
+              />
+              <label htmlFor={name}>{label}</label>
+            </div>
+          ))}
         </div>
-      </div>
-      <div>
-        <p className="text-lg font-semibold">Dificuldade</p>
+      </fieldset>
+
+      <fieldset>
+        <legend className="text-lg font-semibold">Dificuldade</legend>
         <div className="flex flex-col gap-0.5 px-2">
-          <div className="flex gap-1">
-            <input
-              name="easy"
-              type="checkbox"
-              onChange={handleChange}
-              checked={formData.queryParams.easy}
-            />
-            <label htmlFor="easy">Fáceis 😎</label>
-          </div>
-          <div className="flex gap-1">
-            <input
-              name="medium"
-              type="checkbox"
-              onChange={handleChange}
-              checked={formData.queryParams.medium}
-            />
-            <label htmlFor="medium">Médias 🤔</label>
-          </div>
-          <div className="flex gap-1">
-            <input
-              name="hard"
-              type="checkbox"
-              onChange={handleChange}
-              checked={formData.queryParams.hard}
-            />
-            <label htmlFor="hard">Difíceis 🤯</label>
-          </div>
-          <div className="flex gap-1">
-            <input
-              name="legendary"
-              type="checkbox"
-              onChange={handleChange}
-              checked={formData.queryParams.legendary}
-            />
-            <label htmlFor="legendary">Lendárias 💀</label>
-          </div>
+          {[
+            { name: "easy", label: "Fáceis 😎" },
+            { name: "medium", label: "Médias 🤔" },
+            { name: "hard", label: "Difíceis 🤯" },
+            { name: "legendary", label: "Lendárias 💀" },
+          ].map(({ name, label }) => (
+            <div key={name} className="flex gap-1">
+              <input
+                id={name}
+                name={name}
+                type="checkbox"
+                onChange={(e) => handleCheckboxChange(name, e.target.checked)}
+                checked={formData.queryParams[name as keyof typeof formData.queryParams]}
+              />
+              <label htmlFor={name}>{label}</label>
+            </div>
+          ))}
         </div>
-      </div>
-      <div className="flex flex-col gap-0.5">
+      </fieldset>
+
+      <fieldset>
         <div className="flex gap-1">
           <input
+            id="autoskip"
             name="autoskip"
             type="checkbox"
-            onChange={handleChange}
+            onChange={(e) => handleCheckboxChange("autoskip", e.target.checked)}
             checked={formData.autoskip}
           />
           <label htmlFor="autoskip">Avançar automaticamente</label>
         </div>
-        {formData.autoskip &&
-          <div className="flex flex-col gap-1">
-            <label htmlFor="autoskip">Intervalo do avanço</label>
+        
+        {formData.autoskip && (
+          <div className="flex flex-col gap-1 mt-2">
+            <label>Intervalo do avanço</label>
             <div className="px-2">
-              <div className="flex items-center gap-1">
-                <input
-                  name="autoskipDelay"
-                  type="radio"
-                  value={0.5}
-                  onChange={handleChange}
-                  checked={formData.autoskipDelay.toString() === "0.5"}
-                />
-                <label>0,5 segundo</label>
-              </div>
-              <div className="flex items-center gap-1">
-                <input
-                  name="autoskipDelay"
-                  type="radio"
-                  value={1.0}
-                  onChange={handleChange}
-                  checked={formData.autoskipDelay.toString() === "1"}
-                />
-                <label>1 segundo</label>
-              </div>
-              <div className="flex items-center gap-1">
-                <input
-                  name="autoskipDelay"
-                  type="radio"
-                  value={2.0}
-                  onChange={handleChange}
-                  checked={formData.autoskipDelay.toString() === "2"}
-                />
-                <label>2 segundos</label>
-              </div>
-              <div className="flex items-center gap-1">
-                <input
-                  name="autoskipDelay"
-                  type="radio"
-                  value={4.0}
-                  onChange={handleChange}
-                  checked={formData.autoskipDelay.toString() === "4"}
-                />
-                <label>4 segundos</label>
-              </div>
+              {DELAY_OPTIONS.map((option) => (
+                <div key={option.value} className="flex items-center gap-1">
+                  <input
+                    id={`delay-${option.value}`}
+                    name="autoskipDelay"
+                    type="radio"
+                    value={option.value}
+                    onChange={() => handleRadioChange(option.value)}
+                    checked={formData.autoskipDelay === option.value}
+                  />
+                  <label htmlFor={`delay-${option.value}`}>{option.label}</label>
+                </div>
+              ))}
             </div>
           </div>
-        }
-      </div>
+        )}
+      </fieldset>
     </form>
   );
 }

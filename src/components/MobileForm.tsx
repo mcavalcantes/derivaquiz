@@ -1,7 +1,7 @@
 import type { FormData } from "../types/types";
 import { createQueryString } from "../lib/createQueryString";
 
-export function DesktopForm({
+export function MobileForm({
   formData,
   setFormData,
   setQueryString,
@@ -28,7 +28,9 @@ export function DesktopForm({
       });
     }
 
-    setQueryString(createQueryString(newFormData.queryParams));
+    const queryString = createQueryString(newFormData.queryParams);
+
+    setQueryString(queryString);
     setFormData(newFormData);
   }
   
@@ -125,9 +127,9 @@ export function DesktopForm({
                 <input
                   name="autoskipDelay"
                   type="radio"
-                  value={500}
+                  value={0.5}
                   onChange={handleChange}
-                  checked={formData.autoskipDelay.toString() === "500"}
+                  checked={formData.autoskipDelay.toString() === "0.5"}
                 />
                 <label>0,5 segundo</label>
               </div>
@@ -137,7 +139,7 @@ export function DesktopForm({
                   type="radio"
                   value={1.0}
                   onChange={handleChange}
-                  checked={formData.autoskipDelay.toString() === "1000"}
+                  checked={formData.autoskipDelay.toString() === "1"}
                 />
                 <label>1 segundo</label>
               </div>
@@ -147,7 +149,7 @@ export function DesktopForm({
                   type="radio"
                   value={2.0}
                   onChange={handleChange}
-                  checked={formData.autoskipDelay.toString() === "2000"}
+                  checked={formData.autoskipDelay.toString() === "2"}
                 />
                 <label>2 segundos</label>
               </div>
@@ -157,7 +159,7 @@ export function DesktopForm({
                   type="radio"
                   value={4.0}
                   onChange={handleChange}
-                  checked={formData.autoskipDelay.toString() === "4000"}
+                  checked={formData.autoskipDelay.toString() === "4"}
                 />
                 <label>4 segundos</label>
               </div>
