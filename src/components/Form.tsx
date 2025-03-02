@@ -46,7 +46,7 @@ export function Form({
   };
   
   return (
-    <form className="py-8 flex flex-col gap-4">
+    <form className="xl:mt-16 flex flex-col gap-4">
       <fieldset>
         <legend className="text-lg font-semibold">Tipo</legend>
         <div className="flex flex-col gap-0.5 px-2">
