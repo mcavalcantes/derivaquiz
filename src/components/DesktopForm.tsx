@@ -28,9 +28,7 @@ export function DesktopForm({
       });
     }
 
-    const queryString = createQueryString(newFormData.queryParams);
-
-    setQueryString(queryString);
+    setQueryString(createQueryString(newFormData.queryParams));
     setFormData(newFormData);
   }
   
@@ -127,9 +125,9 @@ export function DesktopForm({
                 <input
                   name="autoskipDelay"
                   type="radio"
-                  value={0.5}
+                  value={500}
                   onChange={handleChange}
-                  checked={formData.autoskipDelay.toString() === "0.5"}
+                  checked={formData.autoskipDelay.toString() === "500"}
                 />
                 <label>0,5 segundo</label>
               </div>
@@ -139,7 +137,7 @@ export function DesktopForm({
                   type="radio"
                   value={1.0}
                   onChange={handleChange}
-                  checked={formData.autoskipDelay.toString() === "1"}
+                  checked={formData.autoskipDelay.toString() === "1000"}
                 />
                 <label>1 segundo</label>
               </div>
@@ -149,7 +147,7 @@ export function DesktopForm({
                   type="radio"
                   value={2.0}
                   onChange={handleChange}
-                  checked={formData.autoskipDelay.toString() === "2"}
+                  checked={formData.autoskipDelay.toString() === "2000"}
                 />
                 <label>2 segundos</label>
               </div>
@@ -159,7 +157,7 @@ export function DesktopForm({
                   type="radio"
                   value={4.0}
                   onChange={handleChange}
-                  checked={formData.autoskipDelay.toString() === "4"}
+                  checked={formData.autoskipDelay.toString() === "4000"}
                 />
                 <label>4 segundos</label>
               </div>

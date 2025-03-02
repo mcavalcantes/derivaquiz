@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
 import { Display } from "./components/Display";
 import { Answer } from "./components/Answer";
-import { MobileForm } from "./components/MobileForm";
+import { Form } from "./components/Form";
 import { DesktopForm } from "./components/DesktopForm";
 
 import { Cog } from "./icons/heroicons/Cog";
@@ -9,33 +10,22 @@ import { Sun } from "./icons/heroicons/Sun";
 import { Moon } from "./icons/heroicons/Moon";
 import { Github } from "./icons/iconmonstr/Github";
 
-import { getRandomQuestion } from "./lib/getRandomQuestion";
 import { getQuestion } from "./lib/getQuestion";
 import { togglePageTheme } from "./lib/togglePageTheme";
 import { createQueryString } from "./lib/createQueryString";
-import type { Response } from "./types/types";
-import type { FormData } from "./types/types";
+import type {
+  Response,
+  UserPreferences,
+  FormData,
+} from "./types/types";
 
 export function App() {
-  const [theme, setTheme] = useState<string>(localStorage.getItem("theme")!);
+  const userPreferences: UserPreferences = JSON.parse(localStorage.getItem("userPreferences")!);
+
+  const [pageTheme, setPageTheme] = useState<string>(userPreferences.pageTheme);
+  const [formData, setFormData] = useState<FormData>(userPreferences.formData);
+  const [queryString, setQueryString] = useState<string>(createQueryString(userPreferences.formData.queryParams));
   const [response, setResponse] = useState<Response | null>(null);
-
-  const [dropdown, setDropdown] = useState<boolean>(false);
-  const [formData, setFormData] = useState<FormData>({
-    queryParams: {
-      limit: true,
-      derivative: true,
-      integral: true,
-      easy: true,
-      medium: true,
-      hard: true,
-      legendary: false,
-    },
-    autoskip: true,
-    autoskipDelay: 2000,
-  });
-
-  const [queryString, setQueryString] = useState<string>(createQueryString(formData.queryParams));
 
   async function refreshQuestion() {
     const json = await getQuestion(queryString);
@@ -43,38 +33,31 @@ export function App() {
   }
 
   useEffect(() => {
-    async function initialize() {
-      const json = await getRandomQuestion();
-      setResponse(json);
-    }
-    
-    initialize();
+    refreshQuestion();
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
       <header className="h-16 px-8 md:px-40 xl:px-100 flex items-center gap-2">
-        <button
+        {/* <button
           onClick={() => setDropdown(!dropdown)}
-          className="xl:hidden p-0.5 cursor-pointer border border-[var(--border)] rounded"
-        ><Cog /></button>
+          className="xl:hidden z-100 p-0.5 cursor-pointer border border-[var(--border)] rounded"
+        ><Cog /></button> */}
         <button
-          onClick={() => togglePageTheme(setTheme)}
-          className="p-0.5 cursor-pointer border border-[var(--border)] rounded"
-        >{theme === "dark" ? <Sun /> : <Moon />}</button>
-        {dropdown &&
+          onClick={() => togglePageTheme(setPageTheme)}
+          className="p-0.5 z-100 cursor-pointer border border-[var(--border)] rounded"
+        >{pageTheme === "dark" ? <Sun /> : <Moon />}</button>
+        {/* {dropdown &&
           <div className="xl:hidden z-50 absolute left-0 right-0 top-16 px-8 md:px-40 bg-[var(--foreground)] shadow">
-            <MobileForm
+            <Form
               formData={formData}
               setFormData={setFormData}
               setQueryString={setQueryString}
             />
           </div>
-        }
+        } */}
       </header>
-      <div className="
-        hidden xl:flex flex-col absolute left-0 top-0 bottom-0 w-72 items-center
-      ">
+      <div className="absolute left-0 top-0 bottom-0 hidden xl:flex flex-col items-center w-100">
         <DesktopForm 
           formData={formData}
           setFormData={setFormData}
@@ -82,21 +65,21 @@ export function App() {
         />
       </div>
       <main className="flex flex-col gap-4 px-8 md:px-40 xl:px-100">
-        <Display expression={response?.question.content} />
+        <Display content={response?.question.content} />
         <ul className="grid gap-4">
           {response?.answers.map(item => (
             <li key={item.id}>
               <Answer
-                expression={item.content}
+                content={item.content}
                 correct={item.correct}
-                refresh={refreshQuestion}
-                delay={formData.autoskipDelay}
+                autoskipDelay={formData.autoskipDelay}
+                refreshQuestion={refreshQuestion}
               />
             </li>
           ))}
         </ul>
       </main>
-      <footer className="mt-auto h-16 select-none flex items-center justify-center gap-1 text-xs font-semibold">
+      <footer className="mt-auto h-16 select-none flex items-center justify-center gap-1 text-xs font-semibold">  
         <a
           href="mailto:matheuscavalcantes.mc@gmail.com"
           className="underline underline-offset-2"
