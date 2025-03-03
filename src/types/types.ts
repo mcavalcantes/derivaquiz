@@ -1,36 +1,46 @@
-export interface UserPreferences {
+export type UserPreferences = {
   pageTheme: string;
   formData: FormData;
-}
+};
 
-export interface FormData {
+export type FormData = {
   autoskip: boolean;
   autoskipDelay: number;
-  queryParams: QueryParams;
-}
+  queryParams: {
+    limit: boolean;
+    derivative: boolean;
+    integral: boolean;
+    easy: boolean;
+    medium: boolean;
+    hard: boolean;
+    legendary: boolean;
+  };
+};
 
-export interface QueryParams {
-  limit: boolean;
-  derivative: boolean;
-  integral: boolean;
-  easy: boolean;
-  medium: boolean;
-  hard: boolean;
-  legendary: boolean;
-}
+export type Response = {
+  question: {
+    id: number;
+    content: string;
+  };
+  answers: Array<{
+    id: number;
+    content: string;
+    correct: boolean;
+  }>;
+};
 
-export interface Response {
-  question: Question;
-  answers: Array<Answer>;
-}
+export type State = {
+  pageTheme: string;
+  formData: FormData;
+  queryString: string;
+  response: Response | null;
+  mobileFormVisible: boolean;
+};
 
-export interface Question {
-  id: number;
-  content: string;
-}
-
-export interface Answer {
-  id: number;
-  content: string;
-  correct: boolean;
-}
+export type Action =
+  | { type: 'TOGGLE_THEME' }
+  | { type: 'UPDATE_FORM_DATA'; payload: FormData }
+  | { type: 'SET_RESPONSE'; payload: Response | null }
+  | { type: 'TOGGLE_MOBILE_FORM' }
+  | { type: 'LOAD_PREFERENCES' }
+  | { type: 'MANUAL_SKIP' };
