@@ -7,6 +7,8 @@
   --border: #9ca3af;
   --foreground: #ffffff;
   --ring: #6b7280;
+  --input-unchecked: #d4d4d4;
+  --input-checked: #3b82f6;
 
   --feedback-correct: #22c55e;
   --feedback-incorrect: #ef4444;
@@ -23,6 +25,8 @@
   --border: #78716c;
   --foreground: #44403c;
   --ring: #a8a29e;
+  --input-unchecked: #737373;
+  --input-checked: #3b82f6;
 }
 
 @font-face {
