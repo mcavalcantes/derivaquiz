@@ -65,23 +65,22 @@ export function Form() {
       newFormData["autoskipDelay"] = event;
     }
 
-    console.log(newFormData);
     dispatch({ type: 'UPDATE_FORM_DATA', payload: newFormData });
   }
 
   return (
     <form className="xl:mt-16 xl:px-8 w-full flex flex-col gap-4">
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-2">
         <h3 className="text-lg font-semibold">Tipos</h3>
-        <div className="flex flex-col">
+        <div className="select-none flex flex-col gap-1 px-2">
           {TYPE_OPTIONS.map((type: TypeOption) => (
-            <div key={type.name} className="flex items-center gap-1">
+            <div key={type.name} className="flex items-center gap-2">
               <Checkbox
                 name={type.name}
                 checked={state.formData.queryParams[type.name.split(".").pop() as keyof typeof state.formData.queryParams]}
                 onChange={(checked) => handleChange(checked, type.name, "checkbox")}
                 className="
-                  group size-4 rounded-sm border
+                  cursor-pointer group size-4 rounded-sm border
                   border-[var(--border)] data-[checked]:border-none
                   bg-[var(--input-unchecked)] data-[checked]:bg-[var(--input-checked)]
               ">
@@ -95,17 +94,17 @@ export function Form() {
         </div>
       </div>
       
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-2">
         <h3 className="text-lg font-semibold">Dificuldades</h3>
-        <div className="flex flex-col">
+        <div className="select-none flex flex-col gap-1 px-2">
           {DIFFICULTY_OPTIONS.map((type: TypeOption) => (
-            <div key={type.name} className="flex items-center gap-1">
+            <div key={type.name} className="flex items-center gap-2">
               <Checkbox
                 name={type.name}
                 checked={state.formData.queryParams[type.name.split(".").pop() as keyof typeof state.formData.queryParams]}
                 onChange={(checked) => handleChange(checked, type.name, "checkbox")}
                 className="
-                  group size-4 rounded-sm border
+                  cursor-pointer group size-4 rounded-sm border
                   border-[var(--border)] data-[checked]:border-none
                   bg-[var(--input-unchecked)] data-[checked]:bg-[var(--input-checked)]
               ">
@@ -119,13 +118,13 @@ export function Form() {
         </div>
       </div>
 
-      <div className="flex flex-col">
-        <label className="flex items-center gap-2">
+      <div className="flex flex-col gap-2">
+        <label className="select-none flex items-center gap-2">
           <Switch
             checked={state.formData.autoskip}
             onChange={(checked) => handleChange(checked, undefined, "switch")}
             className="
-              group inline-flex h-5 w-10 items-center rounded-full transition
+              cursor-pointer group inline-flex h-5 w-10 items-center rounded-full transition
               bg-[var(--input-unchecked)] data-[checked]:bg-[var(--input-checked)]
           ">
             <span className="size-3 translate-x-1 rounded-full bg-white transition group-data-[checked]:translate-x-6" />
@@ -135,19 +134,20 @@ export function Form() {
         
         {state.formData.autoskip && (
           <div>
-            <label>
+            <div className="flex flex-col gap-2">
               <span className="text-lg font-semibold">Intervalo do avanço</span>
               <RadioGroup
                 name="autoskipDelay"
                 value={state.formData.autoskipDelay}
                 onChange={(value) => handleChange(value, undefined, "radio")}
+                className="select-none flex flex-col gap-1 px-2"
               >
                 {DELAY_OPTIONS.map((option: DelayOption) => (
                   <Field key={option.value} className="flex items-center gap-2">
                     <Radio
                       value={option.value}
                       className="
-                        group size-4 flex items-center justify-center rounded-full
+                        cursor-pointer group size-4 flex items-center justify-center rounded-full
                         border border-[var(--border)] data-[checked]:border-none
                         bg-[var(--input-unchecked)] data-[checked]:bg-[var(--input-checked)]
                     ">
@@ -157,7 +157,7 @@ export function Form() {
                   </Field>
                 ))}
               </RadioGroup>
-            </label>
+            </div>
           </div>
         )}
       </div>
