@@ -1,7 +1,7 @@
 {
   "name": "derivaquiz",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,7 @@
     "@headlessui/react": "^2.2.0",
     "@tailwindcss/vite": "^4.0.8",
     "@types/katex": "^0.16.7",
+    "@types/node": "^22.13.9",
     "katex": "^0.16.21",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
