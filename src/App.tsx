@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 
 import { Display } from "./components/Display";
 import { Answer } from "./components/Answer";
@@ -12,11 +12,27 @@ import { Github } from "./icons/iconmonstr/Github";
 import { getQuestion } from "./lib/getQuestion";
 import { togglePageTheme } from "./lib/togglePageTheme";
 import { createQueryString } from "./lib/createQueryString";
+
 import type {
   Response,
   UserPreferences,
   FormData,
 } from "./types/types";
+
+type Action = 
+  | { type: 'TOGGLE_THEME' }
+  | { type: 'UPDATE_FORM_DATA', payload: FormData }
+  | { type: 'SET_RESPONSE', payload: Response | null }
+  | { type: 'TOGGLE_MOBILE_FORM' }
+  | { type: 'LOAD_PREFERENCES' };
+
+type State = {
+  pageTheme: string;
+  formData: FormData;
+  queryString: string;
+  response: Response | null;
+  mobileFormVisible: boolean;
+};
 
 const defaultUserPreferences: UserPreferences = {
   pageTheme: "light",
@@ -35,7 +51,80 @@ const defaultUserPreferences: UserPreferences = {
   },
 };
 
+function appReducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'TOGGLE_THEME': {
+      const newTheme = state.pageTheme === 'light' ? 'dark' : 'light';
+      return { ...state, pageTheme: newTheme };
+    }
+      
+    case 'UPDATE_FORM_DATA': {
+      const newFormData = action.payload;
+      const newQueryString = createQueryString(newFormData.queryParams);
+      return { ...state, formData: newFormData, queryString: newQueryString };
+    }
+      
+    case 'SET_RESPONSE': {
+      return { ...state, response: action.payload };
+    }
+      
+    case 'TOGGLE_MOBILE_FORM': {
+      return { ...state, mobileFormVisible: !state.mobileFormVisible };
+    }
+      
+    case 'LOAD_PREFERENCES': {
+      const stored = localStorage.getItem("userPreferences");
+      if (stored) {
+        const prefs = JSON.parse(stored);
+        return {
+          ...state,
+          pageTheme: prefs.pageTheme,
+          formData: prefs.formData,
+          queryString: createQueryString(prefs.formData.queryParams)
+        };
+      }
+      return state;
+    }
+      
+    default:
+      return state;
+  }
+}
+
 export function App() {
+  const initialState: State = {
+    pageTheme: 'light',
+    formData: defaultUserPreferences.formData,
+    queryString: createQueryString(defaultUserPreferences.formData.queryParams),
+    response: null,
+    mobileFormVisible: false
+  };
+
+  const [state, dispatch] = useReducer(appReducer, initialState);
+
+  useEffect(() => {
+    dispatch({ type: 'LOAD_PREFERENCES' });
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("userPreferences", JSON.stringify({
+      pageTheme: state.pageTheme,
+      formData: state.formData,
+    }));
+  }, [state.pageTheme, state.formData]);
+
+  useEffect(() => {
+    if (state.pageTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [state.pageTheme]);
+
+  useEffect(() => {
+    refreshQuestion();
+  }, [state.queryString]);
+
   function getUserPreferences(): UserPreferences {
     const stored = localStorage.getItem("userPreferences");
 
@@ -46,39 +135,49 @@ export function App() {
     return defaultUserPreferences;
   }
 
-  const [userPreferences, setUserPreferences] = useState<UserPreferences>(getUserPreferences());
-  const [pageTheme, setPageTheme] = useState<string>(userPreferences.pageTheme);
-  const [formData, setFormData] = useState<FormData>(userPreferences.formData);
-  const [queryString, setQueryString] = useState<string>(createQueryString(userPreferences.formData.queryParams));
-  const [response, setResponse] = useState<Response | null>(null);
-  const [mobileFormVisible, setMobileFormVisible] = useState<boolean>(false);
-
-  useEffect(() => {
-    localStorage.setItem("userPreferences", JSON.stringify({
-      pageTheme,
-      formData,
-    }));
-  }, [pageTheme, formData]);
-
-  useEffect(() => {
-    if (userPreferences.pageTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
-
-  useEffect(() => {
-    setQueryString(createQueryString(formData.queryParams));
-  }, [formData]);
-
-  useEffect(() => {
-    refreshQuestion();
-  }, []);
-
   async function refreshQuestion() {
-    const json = await getQuestion(queryString);
-    setResponse(json);
+    try {
+      const json = await getQuestion(state.queryString);
+      dispatch({ type: 'SET_RESPONSE', payload: json });
+    } catch (error) {
+      // TODO implement
+      console.log(error);
+    }
+  }
+
+  async function handleClick(
+    buttonRef: React.RefObject<HTMLButtonElement | null>,
+    timeoutRef: React.RefObject<number | null>,
+    correct: boolean,
+  ) {
+    if (timeoutRef.current !== null) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    const btn = buttonRef.current as HTMLButtonElement;
+    if (!btn) return;
+
+    btn.classList.remove("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
+  
+    if (correct) {
+      btn.classList.add("border-[var(--feedback-correct)]", "ring-2", "ring-[var(--feedback-correct)]");
+    } else {
+      btn.classList.add("border-[var(--feedback-incorrect)]", "ring-2", "ring-[var(--feedback-incorrect)]");
+    }
+
+    timeoutRef.current = window.setTimeout(async () => {
+      if (buttonRef.current) {
+        if (correct) {
+          buttonRef.current.classList.remove("border-[var(--feedback-correct)]", "ring-2", "ring-[var(--feedback-correct)]");
+        } else {
+          buttonRef.current.classList.remove("border-[var(--feedback-incorrect)]", "ring-2", "ring-[var(--feedback-incorrect)]");
+        }
+
+        buttonRef.current.classList.add("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
+      }
+      await refreshQuestion();
+      timeoutRef.current = null;
+    }, formData.autoskipDelay);
   }
 
   return (
@@ -149,8 +248,7 @@ export function App() {
               <Answer
                 content={item.content}
                 correct={item.correct}
-                autoskipDelay={formData.autoskipDelay}
-                refreshQuestion={refreshQuestion}
+                handleClick={handleClick}
               />
             </li>
           ))}
