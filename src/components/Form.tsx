@@ -54,27 +54,37 @@ export function Form() {
   ) {
     const newFormData = { ...state.formData };
 
+    /* DO NOT MOVE A THING HERE */ 
+    /* it's the ONLY thing that works properly. */
+    if (fieldType === "checkbox" && typeof event === "boolean" && fieldName) {
+      if (!event) {
+        let typeCount = 0;
+        let difficultyCount = 0;
+  
+        if (newFormData.queryParams.limit) typeCount++;
+        if (newFormData.queryParams.derivative) typeCount++;
+        if (newFormData.queryParams.integral) typeCount++;
+
+        if (newFormData.queryParams.easy) difficultyCount++;
+        if (newFormData.queryParams.medium) difficultyCount++;
+        if (newFormData.queryParams.hard) difficultyCount++;
+        if (newFormData.queryParams.legendary) difficultyCount++;
+
+        const field = fieldName.split(".")[1];
+
+        if (
+          (typeCount === 1 && ["limit", "derivative", "integral"].includes(field)) ||
+          (difficultyCount === 1 && ["easy", "medium", "hard", "legendary"].includes(field))
+        ) {
+          dispatch({ type: "TOGGLE_DIALOG" });
+          return;
+        }
+      }
+    }
+
     if (fieldType === "checkbox" && typeof event === "boolean" && fieldName) {
       const [parent, child] = fieldName.split(".");
       if (parent === "queryParams") {
-        if (event === false) {
-          let typeCount = 0;
-          if (newFormData.queryParams.limit) typeCount++;
-          if (newFormData.queryParams.derivative) typeCount++;
-          if (newFormData.queryParams.integral) typeCount++;
-
-          let difficultyCount = 0;
-          if (newFormData.queryParams.easy) difficultyCount++;
-          if (newFormData.queryParams.medium) difficultyCount++;
-          if (newFormData.queryParams.hard) difficultyCount++;
-          if (newFormData.queryParams.legendary) difficultyCount++;
-
-          if (typeCount === 0 || difficultyCount === 0) {
-            dispatch({ type: "TOGGLE_DIALOG" });
-            return;
-          }
-        }
-
         switch (child) {
           case "limit":
           case "derivative":
