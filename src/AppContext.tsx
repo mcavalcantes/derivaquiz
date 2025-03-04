@@ -1,15 +1,23 @@
 import {
   createContext,
+  useCallback,
   useContext,
-  useReducer,
   useEffect,
-  useCallback
-} from 'react';
+  useReducer,
+} from "react";
 
-import { State, Action } from './types/types';
-import { appReducer, initialState } from './hooks/appReducer';
-import { applyThemeToDOM } from './lib/themeUtils';
-import { getQuestion } from './lib/getQuestion';
+import {
+  appReducer,
+  defaultInitialState,
+} from "@/hooks/appReducer";
+
+import { getQuestion } from "@/lib/getQuestion";
+import { applyThemeToDOM } from '@/lib/themeUtils';
+
+import type {
+  State,
+  Action,
+} from "@/types/types";
 
 type AppContextType = {
   state: State;
@@ -25,54 +33,43 @@ type AppContextType = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(appReducer, initialState);
-  
+  const [state, dispatch] = useReducer(appReducer, defaultInitialState);
+
   useEffect(() => {
-    dispatch({ type: 'LOAD_PREFERENCES' });
+    const storedPreferences = localStorage.getItem("userPreferences");
+    if (storedPreferences) {
+      try {
+        const parsedPreferences = JSON.parse(storedPreferences);
+        dispatch({ 
+          type: "UPDATE_USER_PREFERENCES", 
+          payload: parsedPreferences 
+        });
+      } catch (error) {
+        console.error("Error parsing stored preferences:", error);
+      }
+    }
   }, []);
-  
-  useEffect(() => {
-    localStorage.setItem("userPreferences", JSON.stringify({
-      pageTheme: state.pageTheme,
-      formData: state.formData,
-    }));
-  }, [state.pageTheme, state.formData]);
-  
+
   useEffect(() => {
     applyThemeToDOM(state.pageTheme);
   }, [state.pageTheme]);
-  
+
   useEffect(() => {
-    refreshQuestion();
+    const initialize = async () => {
+      try {
+        const json = await getQuestion(state.queryString);
+        dispatch({ type: "UPDATE_RESPONSE", payload: json });
+      } catch (error) {
+        console.error("Failed to load initial question", error);
+      }
+    }
+
+    initialize();
   }, [state.queryString]);
   
-  useEffect(() => {
-    const handleManualSkip = () => {
-      const timeoutRefs = document.querySelectorAll('[data-timeout-ref]');
-      timeoutRefs.forEach((btn) => {
-        const timeoutId = parseInt(btn.getAttribute('data-timeout-ref') || '0');
-        if (timeoutId) clearTimeout(timeoutId);
-        btn.setAttribute('data-timeout-ref', '0');
-      });
-      
-      refreshQuestion();
-    };
-    
-    const manualSkipListener = (action: Action) => {
-      if (action.type === 'MANUAL_SKIP') {
-        handleManualSkip();
-      }
-    };
-  }, []);
-  
   const refreshQuestion = useCallback(async () => {
-    try {
-      const json = await getQuestion(state.queryString);
-      dispatch({ type: 'SET_RESPONSE', payload: json });
-    } catch (error) {
-      // TODO
-      console.error("Error fetching question:", error);
-    }
+    const json = await getQuestion(state.queryString);
+    dispatch({ type: "UPDATE_RESPONSE", payload: json });
   }, [state.queryString]);
   
   const handleAnswerClick = useCallback(async (
@@ -125,8 +122,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
 export function useApp() {
   const context = useContext(AppContext);
+
   if (context === undefined) {
-    throw new Error('useApp must be used within an AppProvider');
+    throw new Error("`useApp` deve ser usado somente dentro do `AppProvider`");
   }
+  
   return context;
 }

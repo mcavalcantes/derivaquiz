@@ -1,31 +1,22 @@
 import { useEffect, useRef } from "react";
+import { useApp } from "@/AppContext";
 import katex from "katex";
 import "katex/dist/katex.min.css";
-import { useApp } from "../AppContext";
 
 export function Answer({
   content = "",
   correct = false,
 }: {
   content?: string,
-  correct?: boolean
+  correct?: boolean,
 }) {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const timeoutRef = useRef<number | null>(null);
   const { handleAnswerClick } = useApp();
 
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const timeoutRef = useRef<number | null>(null);
+
   useEffect(() => {
-    try {
-      if (buttonRef.current) {
-        katex.render(content, buttonRef.current);
-      }
-    } catch (error) {
-      console.error("KaTeX rendering error:", error);
-      // Fallback rendering if KaTeX fails
-      if (buttonRef.current) {
-        buttonRef.current.textContent = content;
-      }
-    }
+    katex.render(content, buttonRef.current as HTMLButtonElement);
     
     const btn = buttonRef.current;
     if (btn) {
@@ -34,7 +25,7 @@ export function Answer({
         "border-[var(--feedback-incorrect)]", 
         "ring-2", 
         "ring-[var(--feedback-correct)]", 
-        "ring-[var(--feedback-incorrect)]"
+        "ring-[var(--feedback-incorrect)]",
       );
       btn.classList.add("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
     }

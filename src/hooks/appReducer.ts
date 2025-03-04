@@ -35,33 +35,87 @@ export const defaultInitialState: State = {
 export function appReducer(state: State, action: Action): State {
   switch (action.type) {
     case "LOAD_USER_PREFERENCES": {
-      const stored = localStorage.getItem("userPreferences");
+      try {
+        const stored = localStorage.getItem("userPreferences");
 
-      if (stored) {
-        const userPreferences: UserPreferences = JSON.parse(stored);
-        return {
-          ...state,
-          userPreferences: userPreferences,
-          pageTheme: userPreferences.pageTheme,
-          formData: userPreferences.formData,
-        };
+        if (stored) {
+          const savedPreferences: UserPreferences = JSON.parse(stored);
+          
+          const mergedPreferences: UserPreferences = {
+            pageTheme: savedPreferences.pageTheme || defaultUserPreferences.pageTheme,
+            formData: {
+              ...defaultUserPreferences.formData,
+              ...savedPreferences.formData,
+              queryParams: {
+                ...defaultUserPreferences.formData.queryParams,
+                ...savedPreferences.formData?.queryParams
+              }
+            }
+          };
+
+          const newQueryString = createQueryString(mergedPreferences.formData.queryParams);
+        
+          try {
+            localStorage.setItem("userPreferences", JSON.stringify(mergedPreferences));
+          } catch (saveError) {
+            console.error("Error saving loaded preferences:", saveError);
+          }
+
+          return {
+            ...state,
+            userPreferences: mergedPreferences,
+            pageTheme: mergedPreferences.pageTheme,
+            formData: mergedPreferences.formData,
+            queryString: newQueryString,
+          };
+        }
+
+        try {
+          localStorage.setItem("userPreferences", JSON.stringify(defaultUserPreferences));
+        } catch (saveError) {
+          console.error("Error saving default preferences:", saveError);
+        }
+
+        return state;
+      } catch (error) {
+        console.error("Error loading user preferences:", error);
+        return state;
       }
-
-      return state;
     }
 
     case "UPDATE_USER_PREFERENCES": {
       const newUserPreferences = action.payload;
+      const newQueryString = createQueryString(newUserPreferences.formData.queryParams);
+
+      try {
+        localStorage.setItem("userPreferences", JSON.stringify(newUserPreferences));
+      } catch (error) {
+        console.error("Error saving user preferences:", error);
+      }
+
       return {
         ...state,
         userPreferences: newUserPreferences,
         pageTheme: newUserPreferences.pageTheme,
         formData: newUserPreferences.formData,
+        queryString: newQueryString,
       };
     }
 
     case "TOGGLE_PAGE_THEME": {
       const newPageTheme = (state.pageTheme === "dark") ? "light" : "dark";
+      
+      try {
+        const currentPreferences = JSON.parse(localStorage.getItem("userPreferences") || '{}');
+        const updatedPreferences = {
+          ...currentPreferences,
+          pageTheme: newPageTheme
+        };
+        localStorage.setItem("userPreferences", JSON.stringify(updatedPreferences));
+      } catch (error) {
+        console.error("Error saving theme preference:", error);
+      }
+
       return {
         ...state,
         pageTheme: newPageTheme,
@@ -70,6 +124,18 @@ export function appReducer(state: State, action: Action): State {
 
     case "UPDATE_FORM_DATA": {
       const newFormData = action.payload;
+      
+      try {
+        const currentPreferences = JSON.parse(localStorage.getItem("userPreferences") || '{}');
+        const updatedPreferences = {
+          ...currentPreferences,
+          formData: newFormData
+        };
+        localStorage.setItem("userPreferences", JSON.stringify(updatedPreferences));
+      } catch (error) {
+        console.error("Error saving form data:", error);
+      }
+
       return {
         ...state,
         formData: newFormData,
