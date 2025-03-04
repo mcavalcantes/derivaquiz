@@ -37,6 +37,7 @@ export type State = {
   queryString: string;
   response: Response | null;
   mobileFormVisible: boolean;
+  dialogVisibile: boolean;
 };
 
 export type Action =
@@ -44,5 +45,6 @@ export type Action =
   | { type: 'UPDATE_FORM_DATA'; payload: FormData }
   | { type: 'SET_RESPONSE'; payload: Response | null }
   | { type: 'TOGGLE_MOBILE_FORM' }
+  | { type: 'TOGGLE_DIALOG' }
   | { type: 'LOAD_PREFERENCES' }
   | { type: 'MANUAL_SKIP' };

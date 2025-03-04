@@ -25,6 +25,7 @@ export const initialState: State = {
   queryString: createQueryString(defaultUserPreferences.formData.queryParams),
   response: null,
   mobileFormVisible: false,
+  dialogVisibile: false,
 };
 
 export function appReducer(state: State, action: Action): State {
@@ -46,6 +47,10 @@ export function appReducer(state: State, action: Action): State {
       
     case 'TOGGLE_MOBILE_FORM': {
       return { ...state, mobileFormVisible: !state.mobileFormVisible };
+    }
+
+    case 'TOGGLE_DIALOG': {
+      return { ...state, dialogVisibile: !state.dialogVisibile };
     }
       
     case 'LOAD_PREFERENCES': {

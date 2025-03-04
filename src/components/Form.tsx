@@ -55,9 +55,26 @@ export function Form() {
     const newFormData = { ...state.formData };
 
     if (fieldType === "checkbox" && typeof event === "boolean" && fieldName) {
-      /* FormData.queryParams */
       const [parent, child] = fieldName.split(".");
       if (parent === "queryParams") {
+        if (event === false) {
+          let typeCount = 0;
+          if (newFormData.queryParams.limit) typeCount++;
+          if (newFormData.queryParams.derivative) typeCount++;
+          if (newFormData.queryParams.integral) typeCount++;
+
+          let difficultyCount = 0;
+          if (newFormData.queryParams.easy) difficultyCount++;
+          if (newFormData.queryParams.medium) difficultyCount++;
+          if (newFormData.queryParams.hard) difficultyCount++;
+          if (newFormData.queryParams.legendary) difficultyCount++;
+
+          if (typeCount === 0 || difficultyCount === 0) {
+            dispatch({ type: 'TOGGLE_DIALOG' });
+            return;
+          }
+        }
+
         switch (child) {
           case "limit":
           case "derivative":
@@ -71,10 +88,8 @@ export function Form() {
         }
       }
     } else if (fieldType === "switch" && typeof event === "boolean") {
-      /* FormData.autoskip */
       newFormData["autoskip"] = event;
     } else if (fieldType === "radio" && typeof event === "number") {
-      /* FormData.autoskipDelay */
       newFormData["autoskipDelay"] = event;
     }
 

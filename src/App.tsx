@@ -6,7 +6,14 @@ import { Sun } from './icons/heroicons/Sun';
 import { Moon } from './icons/heroicons/Moon';
 import { Cog } from './icons/heroicons/Cog';
 import { Github } from './icons/iconmonstr/Github';
-import { Transition } from '@headlessui/react';
+import {
+  Description,
+  Dialog,
+  DialogPanel, 
+  DialogTitle,
+  Transition,
+} from '@headlessui/react';
+
 
 function AppContent() {
   const { state, dispatch, handleAnswerClick } = useApp();
@@ -38,6 +45,19 @@ function AppContent() {
           Skip
         </button>
       </header>
+
+      <Dialog open={state.dialogVisibile} onClose={() => dispatch({ type: 'TOGGLE_DIALOG' })} className="relative z-100">
+        <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+          <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
+            <DialogTitle className="font-bold">Deactivate account</DialogTitle>
+            <Description>This will permanently deactivate your account</Description>
+            <p>Are you sure you want to deactivate your account? All of your data will be permanently removed.</p>
+            <div className="flex gap-4">
+              <button onClick={() => dispatch({ type: 'TOGGLE_DIALOG' })}>Cancel</button>
+            </div>
+          </DialogPanel>
+        </div>
+      </Dialog>
 
       <Transition show={state.mobileFormVisible}>
         <div className="
@@ -73,39 +93,6 @@ function AppContent() {
           </div>
         </div>
       </Transition>
-      {/*
-      {state.mobileFormVisible && (
-        <div className="fixed inset-0 bg-stone-900/90 z-100 xl:hidden flex items-center justify-center p-4">
-          <div className="bg-[var(--foreground)] rounded-lg p-4 w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Menu</h2>
-              <button 
-                onClick={() => dispatch({ type: 'TOGGLE_MOBILE_FORM' })}
-                className="cursor-pointer size-8 flex items-center justify-center"
-                aria-label="Fechar menu"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <Form />
-            
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={() => dispatch({ type: 'TOGGLE_MOBILE_FORM' })}
-                className="
-                  cursor-pointer px-4 py-2 font-semibold border border-gray-300 shadow shadow-gray-300 hover:bg-gray-100 transition
-                  dark:border-stone-400 dark:shadow-stone-900 dark:hover:bg-stone-600
-                  rounded-lg flex items-center justify-center
-                "
-              >
-                Salvar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-       */}
       
       <div className="absolute left-0 top-0 bottom-0 hidden xl:flex flex-col items-center w-100">
         <Form />
