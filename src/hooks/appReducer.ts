@@ -1,8 +1,11 @@
-import { State, Action } from '../types/types';
-import { getToggledTheme } from '../lib/themeUtils';
-import { createQueryString } from '../lib/createQueryString';
+import type {
+  UserPreferences,
+  State,
+  Action,
+} from "@/types/types";
+import { createQueryString } from "@/lib/createQueryString";
 
-const defaultUserPreferences = {
+export const defaultUserPreferences: UserPreferences = {
   pageTheme: "light",
   formData: {
     autoskip: true,
@@ -19,59 +22,90 @@ const defaultUserPreferences = {
   },
 };
 
-export const initialState: State = {
+export const defaultInitialState: State = {
+  userPreferences: defaultUserPreferences,
   pageTheme: defaultUserPreferences.pageTheme,
   formData: defaultUserPreferences.formData,
   queryString: createQueryString(defaultUserPreferences.formData.queryParams),
   response: null,
   mobileFormVisible: false,
-  dialogVisibile: false,
+  dialogVisible: false,
 };
 
 export function appReducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'TOGGLE_THEME': {
-      const newTheme = getToggledTheme(state.pageTheme);
-      return { ...state, pageTheme: newTheme };
-    }
-      
-    case 'UPDATE_FORM_DATA': {
-      const newFormData = action.payload;
-      const newQueryString = createQueryString(newFormData.queryParams);
-      return { ...state, formData: newFormData, queryString: newQueryString };
-    }
-      
-    case 'SET_RESPONSE': {
-      return { ...state, response: action.payload };
-    }
-      
-    case 'TOGGLE_MOBILE_FORM': {
-      return { ...state, mobileFormVisible: !state.mobileFormVisible };
-    }
-
-    case 'TOGGLE_DIALOG': {
-      return { ...state, dialogVisibile: !state.dialogVisibile };
-    }
-      
-    case 'LOAD_PREFERENCES': {
+    case "LOAD_USER_PREFERENCES": {
       const stored = localStorage.getItem("userPreferences");
+
       if (stored) {
-        const prefs = JSON.parse(stored);
+        const userPreferences: UserPreferences = JSON.parse(stored);
         return {
           ...state,
-          pageTheme: prefs.pageTheme,
-          formData: prefs.formData,
-          queryString: createQueryString(prefs.formData.queryParams)
+          userPreferences: userPreferences,
+          pageTheme: userPreferences.pageTheme,
+          formData: userPreferences.formData,
         };
       }
+
       return state;
     }
-      
-    case 'MANUAL_SKIP': {
-      // TODO this will be handled by an effect to clear timeouts and fetch a new question
-      return state;
+
+    case "UPDATE_USER_PREFERENCES": {
+      const newUserPreferences = action.payload;
+      return {
+        ...state,
+        userPreferences: newUserPreferences,
+        pageTheme: newUserPreferences.pageTheme,
+        formData: newUserPreferences.formData,
+      };
     }
-      
+
+    case "TOGGLE_PAGE_THEME": {
+      const newPageTheme = (state.pageTheme === "dark") ? "light" : "dark";
+      return {
+        ...state,
+        pageTheme: newPageTheme,
+      };
+    }
+
+    case "UPDATE_FORM_DATA": {
+      const newFormData = action.payload;
+      return {
+        ...state,
+        formData: newFormData,
+      };
+    }
+
+    case "UPDATE_QUERY_STRING": {
+      const newQueryString = action.payload;
+      return {
+        ...state,
+        queryString: newQueryString,
+      }
+    }
+
+    case "UPDATE_RESPONSE": {
+      const newResponse = action.payload;
+      return {
+        ...state,
+        response: newResponse,
+      };
+    }
+
+    case "TOGGLE_MOBILE_FORM": {
+      return {
+        ...state,
+        mobileFormVisible: !state.mobileFormVisible,
+      };
+    }
+
+    case "TOGGLE_DIALOG": {
+      return {
+        ...state,
+        dialogVisible: !state.dialogVisible,
+      };
+    }
+
     default: {
       return state;
     }

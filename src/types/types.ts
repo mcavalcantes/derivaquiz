@@ -32,19 +32,21 @@ export type Response = {
 };
 
 export type State = {
+  userPreferences: UserPreferences;
   pageTheme: string;
   formData: FormData;
   queryString: string;
   response: Response | null;
   mobileFormVisible: boolean;
-  dialogVisibile: boolean;
+  dialogVisible: boolean;
 };
 
 export type Action =
-  | { type: 'TOGGLE_THEME' }
-  | { type: 'UPDATE_FORM_DATA'; payload: FormData }
-  | { type: 'SET_RESPONSE'; payload: Response | null }
-  | { type: 'TOGGLE_MOBILE_FORM' }
-  | { type: 'TOGGLE_DIALOG' }
-  | { type: 'LOAD_PREFERENCES' }
-  | { type: 'MANUAL_SKIP' };
+  | { type: "LOAD_USER_PREFERENCES" }
+  | { type: "UPDATE_USER_PREFERENCES"; payload: UserPreferences }
+  | { type: "TOGGLE_PAGE_THEME" }
+  | { type: "UPDATE_FORM_DATA"; payload: FormData }
+  | { type: "UPDATE_QUERY_STRING"; payload: string }
+  | { type: "UPDATE_RESPONSE"; payload: Response | null }
+  | { type: "TOGGLE_MOBILE_FORM" }
+  | { type: "TOGGLE_DIALOG" };

@@ -46,19 +46,6 @@ function AppContent() {
         </button>
       </header>
 
-      <Dialog open={state.dialogVisibile} onClose={() => dispatch({ type: 'TOGGLE_DIALOG' })} className="relative z-100">
-        <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-          <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
-            <DialogTitle className="font-bold">Deactivate account</DialogTitle>
-            <Description>This will permanently deactivate your account</Description>
-            <p>Are you sure you want to deactivate your account? All of your data will be permanently removed.</p>
-            <div className="flex gap-4">
-              <button onClick={() => dispatch({ type: 'TOGGLE_DIALOG' })}>Cancel</button>
-            </div>
-          </DialogPanel>
-        </div>
-      </Dialog>
-
       <Transition show={state.mobileFormVisible}>
         <div className="
           fixed inset-0 bg-stone-900/90 z-100 xl:hidden flex items-center justify-center p-4
