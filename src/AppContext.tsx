@@ -11,8 +11,8 @@ import {
   defaultInitialState,
 } from "@/hooks/appReducer";
 
+import { createQueryString } from "@/lib/createQueryString";
 import { getQuestion } from "@/lib/getQuestion";
-import { applyThemeToDOM } from '@/lib/themeUtils';
 
 import type {
   State,
@@ -36,36 +36,32 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, defaultInitialState);
 
   useEffect(() => {
-    const storedPreferences = localStorage.getItem("userPreferences");
-    if (storedPreferences) {
-      try {
-        const parsedPreferences = JSON.parse(storedPreferences);
-        dispatch({ 
-          type: "UPDATE_USER_PREFERENCES", 
-          payload: parsedPreferences 
-        });
-      } catch (error) {
-        console.error("Error parsing stored preferences:", error);
-      }
-    }
+    dispatch({ type: "LOAD_USER_PREFERENCES" });
   }, []);
 
   useEffect(() => {
-    applyThemeToDOM(state.pageTheme);
-  }, [state.pageTheme]);
+    dispatch({ type: "UPDATE_PAGE_THEME", payload: state.userPreferences.pageTheme });
+  }, []);
+
+  useEffect(() => {
+    dispatch({ type: "UPDATE_FORM_DATA", payload: state.userPreferences.formData });
+  }, []);
+
+  useEffect(() => {
+    dispatch({
+      type: "UPDATE_QUERY_STRING",
+      payload: createQueryString(state.userPreferences.formData.queryParams),
+    });
+  }, []);
 
   useEffect(() => {
     const initialize = async () => {
-      try {
-        const json = await getQuestion(state.queryString);
-        dispatch({ type: "UPDATE_RESPONSE", payload: json });
-      } catch (error) {
-        console.error("Failed to load initial question", error);
-      }
+      const json = await getQuestion(state.queryString);
+      dispatch({ type: "UPDATE_RESPONSE", payload: json });
     }
 
     initialize();
-  }, [state.queryString]);
+  }, []);
   
   const refreshQuestion = useCallback(async () => {
     const json = await getQuestion(state.queryString);
@@ -124,7 +120,7 @@ export function useApp() {
   const context = useContext(AppContext);
 
   if (context === undefined) {
-    throw new Error("`useApp` deve ser usado somente dentro do `AppProvider`");
+    throw new Error(`"useApp" deve ser usado somente dentro do "AppProvider"`);
   }
   
   return context;

@@ -70,7 +70,7 @@ export function Form() {
           if (newFormData.queryParams.legendary) difficultyCount++;
 
           if (typeCount === 0 || difficultyCount === 0) {
-            dispatch({ type: 'TOGGLE_DIALOG' });
+            dispatch({ type: "TOGGLE_DIALOG" });
             return;
           }
         }
@@ -93,7 +93,7 @@ export function Form() {
       newFormData["autoskipDelay"] = event;
     }
 
-    dispatch({ type: 'UPDATE_FORM_DATA', payload: newFormData });
+    dispatch({ type: "UPDATE_FORM_DATA", payload: newFormData });
   }
 
   return (

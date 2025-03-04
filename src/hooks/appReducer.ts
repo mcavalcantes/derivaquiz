@@ -1,5 +1,7 @@
 import type {
   UserPreferences,
+  PageTheme,
+  FormData,
   State,
   Action,
 } from "@/types/types";
@@ -35,141 +37,87 @@ export const defaultInitialState: State = {
 export function appReducer(state: State, action: Action): State {
   switch (action.type) {
     case "LOAD_USER_PREFERENCES": {
-      try {
-        const stored = localStorage.getItem("userPreferences");
+      const stored = localStorage.getItem("userPreferences");
 
-        if (stored) {
-          const savedPreferences: UserPreferences = JSON.parse(stored);
-          
-          const mergedPreferences: UserPreferences = {
-            pageTheme: savedPreferences.pageTheme || defaultUserPreferences.pageTheme,
-            formData: {
-              ...defaultUserPreferences.formData,
-              ...savedPreferences.formData,
-              queryParams: {
-                ...defaultUserPreferences.formData.queryParams,
-                ...savedPreferences.formData?.queryParams
-              }
-            }
-          };
-
-          const newQueryString = createQueryString(mergedPreferences.formData.queryParams);
-        
-          try {
-            localStorage.setItem("userPreferences", JSON.stringify(mergedPreferences));
-          } catch (saveError) {
-            console.error("Error saving loaded preferences:", saveError);
-          }
-
-          return {
-            ...state,
-            userPreferences: mergedPreferences,
-            pageTheme: mergedPreferences.pageTheme,
-            formData: mergedPreferences.formData,
-            queryString: newQueryString,
-          };
-        }
-
-        try {
-          localStorage.setItem("userPreferences", JSON.stringify(defaultUserPreferences));
-        } catch (saveError) {
-          console.error("Error saving default preferences:", saveError);
-        }
-
-        return state;
-      } catch (error) {
-        console.error("Error loading user preferences:", error);
-        return state;
+      if (stored) {
+        const userPreferences: UserPreferences = JSON.parse(stored);
+        return {
+          ...state,
+          userPreferences: userPreferences,
+          pageTheme: userPreferences.pageTheme,
+          formData: userPreferences.formData,
+        };
       }
+
+      return {
+        ...state,
+        userPreferences: defaultUserPreferences,
+        pageTheme: defaultUserPreferences.pageTheme,
+        formData: defaultUserPreferences.formData,
+      };
     }
 
-    case "UPDATE_USER_PREFERENCES": {
-      const newUserPreferences = action.payload;
-      const newQueryString = createQueryString(newUserPreferences.formData.queryParams);
+    case "UPDATE_PAGE_THEME": {
+      const newPageTheme: PageTheme = action.payload;
 
-      try {
-        localStorage.setItem("userPreferences", JSON.stringify(newUserPreferences));
-      } catch (error) {
-        console.error("Error saving user preferences:", error);
+      const stored = localStorage.getItem("userPreferences")!;
+      const userPreferences: UserPreferences = JSON.parse(stored);
+
+      const newUserPreferences: UserPreferences = {
+        ...userPreferences,
+        pageTheme: newPageTheme,
+      };
+
+      localStorage.setItem("userPreferences", JSON.stringify(newUserPreferences));
+      if (newPageTheme === "dark")  {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
       }
 
       return {
         ...state,
         userPreferences: newUserPreferences,
-        pageTheme: newUserPreferences.pageTheme,
-        formData: newUserPreferences.formData,
-        queryString: newQueryString,
-      };
-    }
-
-    case "TOGGLE_PAGE_THEME": {
-      const newPageTheme = (state.pageTheme === "dark") ? "light" : "dark";
-      
-      try {
-        const currentPreferences = JSON.parse(localStorage.getItem("userPreferences") || '{}');
-        const updatedPreferences = {
-          ...currentPreferences,
-          pageTheme: newPageTheme
-        };
-        localStorage.setItem("userPreferences", JSON.stringify(updatedPreferences));
-      } catch (error) {
-        console.error("Error saving theme preference:", error);
-      }
-
-      return {
-        ...state,
         pageTheme: newPageTheme,
       };
     }
 
     case "UPDATE_FORM_DATA": {
-      const newFormData = action.payload;
-      
-      try {
-        const currentPreferences = JSON.parse(localStorage.getItem("userPreferences") || '{}');
-        const updatedPreferences = {
-          ...currentPreferences,
-          formData: newFormData
-        };
-        localStorage.setItem("userPreferences", JSON.stringify(updatedPreferences));
-      } catch (error) {
-        console.error("Error saving form data:", error);
-      }
+      const newFormData: FormData = action.payload;
+      const newQueryString: string = createQueryString(newFormData.queryParams);
+
+      const stored = localStorage.getItem("userPreferences")!;
+
+      const userPreferences: UserPreferences = JSON.parse(stored);
+      const newUserPreferences: UserPreferences = {
+        ...userPreferences,
+        formData: newFormData,
+      };
+
+      localStorage.setItem("userPreferences", JSON.stringify(newUserPreferences));
 
       return {
         ...state,
+        userPreferences: newUserPreferences,
         formData: newFormData,
+        queryString: newQueryString,
       };
     }
 
     case "UPDATE_QUERY_STRING": {
-      const newQueryString = action.payload;
-      return {
-        ...state,
-        queryString: newQueryString,
-      }
+      return { ...state, queryString: action.payload }
     }
 
     case "UPDATE_RESPONSE": {
-      const newResponse = action.payload;
-      return {
-        ...state,
-        response: newResponse,
-      };
+      return { ...state, response: action.payload };
     }
 
     case "TOGGLE_MOBILE_FORM": {
-      return {
-        ...state,
-        mobileFormVisible: !state.mobileFormVisible,
-      };
+      return { ...state, mobileFormVisible: !state.mobileFormVisible };
     }
 
     case "TOGGLE_DIALOG": {
-      return {
-        ...state,
-        dialogVisible: !state.dialogVisible,
-      };
+      return { ...state, dialogVisible: !state.dialogVisible };
     }
 
     default: {

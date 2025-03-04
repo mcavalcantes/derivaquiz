@@ -27,7 +27,10 @@ function AppContent() {
           <Cog />
         </button>
         <button
-          onClick={() => dispatch({ type: "TOGGLE_PAGE_THEME" })}
+          onClick={() => dispatch({
+            type: "UPDATE_PAGE_THEME",
+            payload: state.pageTheme === "dark" ? "light" : "dark"
+          })}
           className="p-0.5 z-50 cursor-pointer border border-[var(--border)] rounded"
         >
           {state.pageTheme === "dark" ? <Sun /> : <Moon />}

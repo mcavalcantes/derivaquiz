@@ -1,7 +1,9 @@
 export type UserPreferences = {
-  pageTheme: string;
+  pageTheme: PageTheme;
   formData: FormData;
 };
+
+export type PageTheme = "light" | "dark";
 
 export type FormData = {
   autoskip: boolean;
@@ -33,7 +35,7 @@ export type Response = {
 
 export type State = {
   userPreferences: UserPreferences;
-  pageTheme: string;
+  pageTheme: PageTheme;
   formData: FormData;
   queryString: string;
   response: Response | null;
@@ -43,8 +45,7 @@ export type State = {
 
 export type Action =
   | { type: "LOAD_USER_PREFERENCES" }
-  | { type: "UPDATE_USER_PREFERENCES"; payload: UserPreferences }
-  | { type: "TOGGLE_PAGE_THEME" }
+  | { type: "UPDATE_PAGE_THEME"; payload: PageTheme }
   | { type: "UPDATE_FORM_DATA"; payload: FormData }
   | { type: "UPDATE_QUERY_STRING"; payload: string }
   | { type: "UPDATE_RESPONSE"; payload: Response | null }
