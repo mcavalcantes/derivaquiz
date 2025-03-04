@@ -6,6 +6,7 @@ import {
   Radio,
   RadioGroup,
   Switch,
+  Transition,
 } from "@headlessui/react";
 
 interface DelayOption {
@@ -81,7 +82,7 @@ export function Form() {
   }
 
   return (
-    <form className="xl:mt-16 xl:px-8 w-full flex flex-col gap-4">
+    <form className="xl:mt-16 xl:px-12 w-full flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         <h3 className="text-lg font-semibold">Tipos</h3>
         <div className="select-none flex flex-col gap-1 px-2">
@@ -92,11 +93,11 @@ export function Form() {
                 checked={state.formData.queryParams[type.name.split(".").pop() as keyof typeof state.formData.queryParams]}
                 onChange={(checked) => handleChange(checked, type.name, "checkbox")}
                 className="
-                  cursor-pointer group size-4 rounded-sm border
-                  border-[var(--border)] data-[checked]:border-none
-                  bg-[var(--input-unchecked)] data-[checked]:bg-[var(--input-checked)]
+                  cursor-pointer group size-4 rounded-sm border border-[var(--border)]
+                  data-[checked]:border-none bg-[var(--input-unchecked)]
+                  data-[checked]:bg-[var(--input-checked)] transition duration-75
               ">
-                <svg className="stroke-white invisible group-data-[checked]:visible" fill="none" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <svg className="stroke-white transition duration-75 opacity-0 group-data-[checked]:opacity-100" fill="none" viewBox="0 0 24 24" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                 </svg>
               </Checkbox>
@@ -116,11 +117,11 @@ export function Form() {
                 checked={state.formData.queryParams[type.name.split(".").pop() as keyof typeof state.formData.queryParams]}
                 onChange={(checked) => handleChange(checked, type.name, "checkbox")}
                 className="
-                  cursor-pointer group size-4 rounded-sm border
-                  border-[var(--border)] data-[checked]:border-none
-                  bg-[var(--input-unchecked)] data-[checked]:bg-[var(--input-checked)]
+                  cursor-pointer group size-4 rounded-sm border border-[var(--border)]
+                  data-[checked]:border-none bg-[var(--input-unchecked)]
+                  data-[checked]:bg-[var(--input-checked)] transition duration-75
               ">
-                <svg className="stroke-white invisible group-data-[checked]:visible" fill="none" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <svg className="stroke-white transition duration-75 opacity-0 group-data-[checked]:opacity-100" fill="none" viewBox="0 0 24 24" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                 </svg>
               </Checkbox>
@@ -143,7 +144,38 @@ export function Form() {
           </Switch>
           <span>Avançar automaticamente</span>
         </label>
-        
+
+        <Transition show={state.formData.autoskip}>
+          <div className="transition data-[closed]:opacity-0 duration-100">
+            <div className="flex flex-col gap-2">
+              <span className="text-lg font-semibold">Intervalo do avanço</span>
+              <RadioGroup
+                name="autoskipDelay"
+                value={state.formData.autoskipDelay}
+                onChange={(value) => handleChange(value, undefined, "radio")}
+                className="select-none flex flex-col gap-1 px-2"
+              >
+                {DELAY_OPTIONS.map((option: DelayOption) => (
+                  <Field key={option.value} className="flex items-center gap-2">
+                    <Radio
+                      value={option.value}
+                      className="
+                        cursor-pointer group size-4 flex items-center justify-center rounded-full
+                        border border-[var(--border)] data-[checked]:border-none bg-[var(--input-unchecked)]
+                        data-[checked]:bg-[var(--input-checked)] transition duration-100
+                    ">
+                      <span className="
+                        invisible group-data-[checked]:visible rounded-full bg-white size-2
+                      "/>
+                    </Radio>
+                    <Label>{option.label}</Label>
+                  </Field>
+                ))}
+              </RadioGroup>
+            </div>
+          </div>
+        </Transition>
+        {/*
         {state.formData.autoskip && (
           <div>
             <div className="flex flex-col gap-2">
@@ -172,6 +204,7 @@ export function Form() {
             </div>
           </div>
         )}
+        */}
       </div>
     </form>
   );

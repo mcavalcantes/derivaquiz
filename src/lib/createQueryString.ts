@@ -1,4 +1,4 @@
-import type { QueryParams } from "../types/types";
+import type { QueryParams } from "@/types/types";
 
 export function createQueryString(params: QueryParams) {
   const paramsArray = [];
