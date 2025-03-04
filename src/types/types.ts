@@ -6,15 +6,17 @@ export type UserPreferences = {
 export type FormData = {
   autoskip: boolean;
   autoskipDelay: number;
-  queryParams: {
-    limit: boolean;
-    derivative: boolean;
-    integral: boolean;
-    easy: boolean;
-    medium: boolean;
-    hard: boolean;
-    legendary: boolean;
-  };
+  queryParams: QueryParams;
+};
+
+export type QueryParams = {
+  limit: boolean;
+  derivative: boolean;
+  integral: boolean;
+  easy: boolean;
+  medium: boolean;
+  hard: boolean;
+  legendary: boolean;
 };
 
 export type Response = {

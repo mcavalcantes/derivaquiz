@@ -55,8 +55,20 @@ export function Form() {
 
     if (fieldType === "checkbox" && typeof event === "boolean" && fieldName) {
       /* FormData.queryParams */
-      const [field, nestedField] = fieldName.split(".");
-      newFormData[field][nestedField] = event;
+      const [parent, child] = fieldName.split(".");
+      if (parent === "queryParams") {
+        switch (child) {
+          case "limit":
+          case "derivative":
+          case "integral":
+          case "easy":
+          case "medium":
+          case "hard":
+          case "legendary":
+            newFormData[parent][child] = event;
+            break;
+        }
+      }
     } else if (fieldType === "switch" && typeof event === "boolean") {
       /* FormData.autoskip */
       newFormData["autoskip"] = event;
