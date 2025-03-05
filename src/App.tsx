@@ -14,6 +14,7 @@ import { Github } from "@/icons/iconmonstr/Github";
 
 import {
   Dialog,
+  DialogBackdrop,
   DialogPanel,
   DialogTitle,
   Transition,
@@ -45,27 +46,37 @@ function AppContent() {
       <Dialog
         open={state.dialogVisible}
         onClose={() => dispatch({ type: "TOGGLE_DIALOG" })}
-        className="relative z-100 focus:outline-none"
+        className="relative z-100 outline-none"
       >
-        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
+        <div className="fixed inset-0 z-100 w-screen overflow-y-auto">
+          <DialogBackdrop
+            transition
+            className="z-50 fixed inset-0 transition data-[closed]:opacity-0 bg-gray-800/80 dark:bg-stone-800/80"
+          />
+          <div className="transition flex min-h-full items-center justify-center p-4">
             <DialogPanel
               transition
-              className="w-full max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+              className="
+                z-100 w-full max-w-md rounded-xl bg-gray-100 dark:bg-stone-700 p-8
+                transition duration-200 data-[closed]:transform-[scale(90%)] data-[closed]:opacity-0
+              "
             >
-              <DialogTitle as="h3" className="text-base/7 font-medium text-white">
-                Payment successful
+              <DialogTitle className="mb-2 font-semibold text-xl text-[var(--text)]">
+                Aviso
               </DialogTitle>
-              <p className="mt-2 text-sm/6 text-white/50">
-                Your payment has been successfully submitted. We’ve sent you an email with all of the details of your
-                order.
+              <p className="mb-8 text-sm text-[var(--text)]">
+                Selecione pelo menos uma opção.
               </p>
-              <div className="mt-4">
+              <div className="flex items-center">
                 <button
-                  className="inline-flex items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700"
                   onClick={() => dispatch({ type: "TOGGLE_DIALOG" })}
+                  className="
+                    cursor-pointer bg-gray-700 hover:bg-gray-600 dark:bg-stone-300 dark:hover:bg-stone-200
+                    transition rounded shadow px-3 py-1.5 font-semibold text-sm text-[var(--background)]
+                    focus:outline-none
+                  "
                 >
-                  Got it, thanks!
+                  Entendi
                 </button>
               </div>
             </DialogPanel>
