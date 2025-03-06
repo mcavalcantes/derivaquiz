@@ -37,6 +37,7 @@ export const defaultInitialState: State = {
   response: null,
   mobileFormVisible: false,
   dialogVisible: false,
+  skipButtonVisible: false,
 };
 
 export function appReducer(state: State, action: Action): State {
@@ -63,6 +64,10 @@ export function appReducer(state: State, action: Action): State {
 
     case "TOGGLE_DIALOG": {
       return { ...state, dialogVisible: !state.dialogVisible };
+    }
+
+    case "TOGGLE_SKIP_BUTTON": {
+      return { ...state, skipButtonVisible: !state.skipButtonVisible };
     }
 
     default: {

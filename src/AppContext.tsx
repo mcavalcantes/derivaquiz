@@ -25,6 +25,7 @@ type AppContextType = {
   state: State;
   dispatch: React.Dispatch<Action>;
   refreshQuestion: () => Promise<void>;
+  manualSkip: () => Promise<void>;
   handleAnswerClick: (
     buttonRef: React.RefObject<HTMLButtonElement | null>,
     timeoutRef: React.RefObject<number | null>,
@@ -99,21 +100,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const json = await getQuestion(state.queryString);
     dispatch({ type: "UPDATE_RESPONSE", payload: json });
   }, []);
+
+  const manualSkip = useCallback(async () => {
+    await refreshQuestion();
+    dispatch({ type: "TOGGLE_SKIP_BUTTON" });
+  }, []);
   
   const handleAnswerClick = useCallback(async (
     buttonRef: React.RefObject<HTMLButtonElement | null>,
     timeoutRef: React.RefObject<number | null>,
     correct: boolean,
   ) => {
-    if (timeoutRef.current !== null) {
-      clearTimeout(timeoutRef.current);
-    }
-
     const btn = buttonRef.current as HTMLButtonElement;
     if (!btn) return;
 
+    /* BLOCK OTHER CLICKS */
+
     btn.classList.remove("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
-  
+
     if (correct) {
       btn.classList.add("border-[var(--feedback-correct)]", "ring-2", "ring-[var(--feedback-correct)]");
     } else {
@@ -121,28 +125,32 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
 
     if (state.formData.autoskip) {
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+      }
+
       timeoutRef.current = window.setTimeout(async () => {
         if (buttonRef.current) {
-          if (correct) {
-            buttonRef.current.classList.remove("border-[var(--feedback-correct)]", "ring-2", "ring-[var(--feedback-correct)]");
-          } else {
-            buttonRef.current.classList.remove("border-[var(--feedback-incorrect)]", "ring-2", "ring-[var(--feedback-incorrect)]");
-          }
-
+          buttonRef.current.classList.remove(
+            "border-[var(--feedback-correct)]",
+            "border-[var(--feedback-incorrect)]",
+            "ring-2",
+            "ring-[var(--feedback-correct)]",
+            "ring-[var(--feedback-incorrect)]",
+          );
           buttonRef.current.classList.add("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
         }
+        
         await refreshQuestion();
         timeoutRef.current = null;
       }, state.formData.autoskipDelay);
-      
-      if (btn && timeoutRef.current) {
-        btn.setAttribute('data-timeout-ref', timeoutRef.current.toString());
-      }
+    } else {
+      dispatch({ type: "TOGGLE_SKIP_BUTTON" });
     }
   }, [state.formData.autoskip, state.formData.autoskipDelay, refreshQuestion]);
   
   return (
-    <AppContext.Provider value={{ state, dispatch, refreshQuestion, handleAnswerClick }}>
+    <AppContext.Provider value={{ state, dispatch, refreshQuestion, manualSkip, handleAnswerClick }}>
       {children}
     </AppContext.Provider>
   );

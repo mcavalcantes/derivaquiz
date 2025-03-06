@@ -15,6 +15,10 @@ export function Answer({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const timeoutRef = useRef<number | null>(null);
 
+  /* the classList manipulation below is probably redundant, since it already
+   * happens on the AppContext file. no bugs so far, so i won't change this.
+   * "if it works, don't touch it."
+   */
   useEffect(() => {
     katex.render(content, buttonRef.current as HTMLButtonElement);
     

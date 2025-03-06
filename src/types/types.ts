@@ -45,6 +45,7 @@ export type State = {
   response: Response | null;
   mobileFormVisible: boolean;
   dialogVisible: boolean;
+  skipButtonVisible: boolean;
 };
 
 export type Action =
@@ -53,4 +54,5 @@ export type Action =
   | { type: "UPDATE_QUERY_STRING"; payload: string }
   | { type: "UPDATE_RESPONSE"; payload: Response }
   | { type: "TOGGLE_MOBILE_FORM" }
-  | { type: "TOGGLE_DIALOG" };
+  | { type: "TOGGLE_DIALOG" }
+  | { type: "TOGGLE_SKIP_BUTTON" };

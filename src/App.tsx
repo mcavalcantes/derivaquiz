@@ -21,7 +21,7 @@ import {
 } from "@headlessui/react";
 
 function AppContent() {
-  const { state, dispatch } = useApp();
+  const { state, dispatch, manualSkip } = useApp();
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -127,12 +127,14 @@ function AppContent() {
       <main className="flex flex-col gap-2 px-8 md:px-40 xl:px-100">
         <Display content={state.response?.question.content} />
         <div className="flex items-center justify-end h-8">
-          <Transition show={!state.formData.autoskip}>
-            <button className="
-              transition ease-out duration-150 data-[enter]:opacity-0 data-[leave]:opacity-0
-              select-none cursor-pointer text-sm font-semibold rounded-md
-              bg-[var(--foreground)] border border-[var(--border)]
-              flex items-center justify-center gap-0.5 h-8 w-24
+          <Transition show={state.skipButtonVisible}>
+            <button
+              onClick={manualSkip}
+              className="
+                transition ease-out duration-150 data-[enter]:opacity-0 data-[leave]:opacity-0
+                select-none cursor-pointer text-sm font-semibold rounded-md
+                bg-[var(--foreground)] border border-[var(--border)]
+                flex items-center justify-center gap-0.5 h-8 w-24
             ">
               <p>Próxima</p>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
