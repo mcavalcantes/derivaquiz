@@ -1,11 +1,15 @@
 import type {
-  UserPreferences,
+  PageTheme,
+  FormData,
   State,
   Action,
 } from "@/types/types";
 import { createQueryString } from "@/lib/createQueryString";
 
-export const defaultUserPreferences: UserPreferences = {
+export const defaultSettings: {
+  pageTheme: PageTheme,
+  formData: FormData,
+} = {
   pageTheme: "light",
   formData: {
     autoskip: true,
@@ -27,9 +31,9 @@ export const defaultUserPreferences: UserPreferences = {
 };
 
 export const defaultInitialState: State = {
-  pageTheme: defaultUserPreferences.pageTheme,
-  formData: defaultUserPreferences.formData,
-  queryString: createQueryString(defaultUserPreferences.formData.queryParams),
+  pageTheme: defaultSettings.pageTheme,
+  formData: defaultSettings.formData,
+  queryString: createQueryString(defaultSettings.formData.queryParams),
   response: null,
   mobileFormVisible: false,
   dialogVisible: false,

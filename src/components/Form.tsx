@@ -8,7 +8,6 @@ import {
   Switch,
   Transition,
 } from "@headlessui/react";
-import { createQueryString } from "@/lib/createQueryString";
 
 interface DelayOption {
   value: number;
@@ -86,10 +85,7 @@ export function Form() {
       newFormData.autoskipDelay = event;
     }
 
-    const newQueryString = createQueryString(newFormData.queryParams);
-
     dispatch({ type: "UPDATE_FORM_DATA", payload: newFormData });
-    dispatch({ type: "UPDATE_QUERY_STRING", payload: newQueryString });
   }
 
   return (

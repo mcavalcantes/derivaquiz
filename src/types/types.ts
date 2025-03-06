@@ -1,8 +1,3 @@
-export type UserPreferences = {
-  pageTheme: PageTheme;
-  formData: FormData;
-};
-
 export type PageTheme =
   | "light"
   | "dark";
@@ -53,11 +48,9 @@ export type State = {
 };
 
 export type Action =
-  | { type: "LOAD_PAGE_THEME" }
-  | { type: "LOAD_FORM_DATA" }
   | { type: "UPDATE_PAGE_THEME"; payload: PageTheme }
   | { type: "UPDATE_FORM_DATA"; payload: FormData }
   | { type: "UPDATE_QUERY_STRING"; payload: string }
-  | { type: "UPDATE_RESPONSE"; payload: Response | null }
+  | { type: "UPDATE_RESPONSE"; payload: Response }
   | { type: "TOGGLE_MOBILE_FORM" }
   | { type: "TOGGLE_DIALOG" };

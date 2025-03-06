@@ -38,23 +38,44 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, defaultInitialState);
 
   useEffect(() => {
-    const storedPageTheme = localStorage.getItem("pageTheme");
-    const pageTheme: PageTheme = JSON.parse(storedPageTheme || JSON.stringify(state.pageTheme));
-
-    if (pageTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-
-    localStorage.setItem("pageTheme", JSON.stringify(pageTheme));
-    dispatch({ type: "UPDATE_PAGE_THEME", payload: pageTheme });
-
-    const storedFormData = localStorage.getItem("formData");
-    const formData: FormData = JSON.parse(storedFormData || JSON.stringify(state.formData));
-
-    localStorage.setItem("formData", JSON.stringify(formData));
-    dispatch({ type: "UPDATE_FORM_DATA", payload: formData });
+    const initializeFromLocalStorage = () => {
+      const storedPageTheme = localStorage.getItem("pageTheme");
+      const storedFormData = localStorage.getItem("formData");
+      
+      const newState = { ...state };
+      
+      if (storedPageTheme) {
+        const pageTheme: PageTheme = JSON.parse(storedPageTheme);
+        newState.pageTheme = pageTheme;
+        dispatch({ type: "UPDATE_PAGE_THEME", payload: pageTheme });
+      } else {
+        localStorage.setItem("pageTheme", JSON.stringify(state.pageTheme));
+      }
+  
+      if (storedFormData) {
+        const formData: FormData = JSON.parse(storedFormData);
+        newState.formData = formData;
+        
+        const queryString = createQueryString(formData.queryParams);
+        newState.queryString = queryString;
+        
+        dispatch({ type: "UPDATE_FORM_DATA", payload: formData });
+        dispatch({ type: "UPDATE_QUERY_STRING", payload: queryString });
+      } else {
+        localStorage.setItem("formData", JSON.stringify(state.formData));
+      }
+      
+      return newState.queryString;
+    };
+  
+    const queryString = initializeFromLocalStorage();
+    
+    const initialize = async () => {
+      const json = await getQuestion(queryString);
+      dispatch({ type: "UPDATE_RESPONSE", payload: json });
+    };
+    
+    initialize();
   }, []);
 
   useEffect(() => {
@@ -69,21 +90,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     localStorage.setItem("formData", JSON.stringify(state.formData));
+
+    const queryString: string = createQueryString(state.formData.queryParams);
+    dispatch({ type: "UPDATE_QUERY_STRING", payload: queryString });
   }, [state.formData]);
-
-  useEffect(() => {
-    const initialize = async () => {
-      const json = await getQuestion(state.queryString);
-      dispatch({ type: "UPDATE_RESPONSE", payload: json });
-    }
-
-    initialize();
-  }, []);
   
   const refreshQuestion = useCallback(async () => {
     const json = await getQuestion(state.queryString);
     dispatch({ type: "UPDATE_RESPONSE", payload: json });
-  }, [state.queryString]);
+  }, []);
   
   const handleAnswerClick = useCallback(async (
     buttonRef: React.RefObject<HTMLButtonElement | null>,
@@ -136,7 +151,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 export function useApp() {
   const context = useContext(AppContext);
 
-  if (context === undefined) {
+  if (!context) {
     throw new Error(`'useApp' deve ser usado somente dentro do 'AppProvider'`);
   }
   
