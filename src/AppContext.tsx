@@ -40,17 +40,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    dispatch({ type: "UPDATE_PAGE_THEME", payload: state.userPreferences.pageTheme });
+    dispatch({ type: "UPDATE_PAGE_THEME", payload: state.pageTheme });
   }, []);
 
   useEffect(() => {
-    dispatch({ type: "UPDATE_FORM_DATA", payload: state.userPreferences.formData });
+    dispatch({ type: "UPDATE_FORM_DATA", payload: state.formData });
   }, []);
 
   useEffect(() => {
+    const queryString = createQueryString(state.formData.queryParams);
     dispatch({
       type: "UPDATE_QUERY_STRING",
-      payload: createQueryString(state.userPreferences.formData.queryParams),
+      payload: queryString,
     });
   }, []);
 
@@ -120,7 +121,7 @@ export function useApp() {
   const context = useContext(AppContext);
 
   if (context === undefined) {
-    throw new Error(`"useApp" deve ser usado somente dentro do "AppProvider"`);
+    throw new Error(`'useApp' deve ser usado somente dentro do 'AppProvider'`);
   }
   
   return context;

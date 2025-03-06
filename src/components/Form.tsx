@@ -8,6 +8,7 @@ import {
   Switch,
   Transition,
 } from "@headlessui/react";
+import { createQueryString } from "@/lib/createQueryString";
 
 interface DelayOption {
   value: number;
@@ -21,27 +22,27 @@ const DELAY_OPTIONS: Array<DelayOption> = [
   { value: 4000, label: "4 segundos" },
 ];
 
-interface TypeOption {
+interface QueryTypeOption {
   name: string;
   label: string;
 }
 
-const TYPE_OPTIONS: Array<TypeOption> = [
-  { name: "queryParams.limit", label: "Limites" },
-  { name: "queryParams.derivative", label: "Derivadas" },
-  { name: "queryParams.integral", label: "Integrais" },
+const QUERY_TYPE_OPTIONS: Array<QueryTypeOption> = [
+  { name: "type.limit", label: "Limites" },
+  { name: "type.derivative", label: "Derivadas" },
+  { name: "type.integral", label: "Integrais" },
 ];
 
-interface DifficultyOption {
+interface QueryDifficultyOption {
   name: string;
   label: string;
 }
 
-const DIFFICULTY_OPTIONS: Array<DifficultyOption> = [
-  { name: "queryParams.easy", label: "Fáceis 😎" },
-  { name: "queryParams.medium", label: "Médias 🤔" },
-  { name: "queryParams.hard", label: "Difíceis 🤯" },
-  { name: "queryParams.legendary", label: "Lendárias 💀" },
+const QUERY_DIFFICULTY_OPTIONS: Array<QueryDifficultyOption> = [
+  { name: "difficulty.easy", label: "Fáceis 😎" },
+  { name: "difficulty.medium", label: "Médias 🤔" },
+  { name: "difficulty.hard", label: "Difíceis 🤯" },
+  { name: "difficulty.legendary", label: "Lendárias 💀" },
 ];
 
 export function Form() {
@@ -49,61 +50,46 @@ export function Form() {
 
   function handleChange(
     event: boolean | number,
+    fieldType: "checkbox" | "switch" | "radio",
     fieldName?: string,
-    fieldType?: "checkbox" | "switch" | "radio",
   ) {
     const newFormData = { ...state.formData };
 
-    /* DO NOT MOVE A THING HERE */ 
-    /* it's the ONLY thing that works properly. */
-    if (fieldType === "checkbox" && typeof event === "boolean" && fieldName) {
-      if (!event) {
-        let typeCount = 0;
-        let difficultyCount = 0;
-  
-        if (newFormData.queryParams.limit) typeCount++;
-        if (newFormData.queryParams.derivative) typeCount++;
-        if (newFormData.queryParams.integral) typeCount++;
+    if (fieldType === "checkbox" && typeof event === "boolean" && !event && fieldName) {
+      let typeCount = 0;
+      for (const key of Object.keys(newFormData.queryParams.type))
+        if (newFormData.queryParams.type[key as keyof typeof newFormData.queryParams.type])
+          typeCount++;
 
-        if (newFormData.queryParams.easy) difficultyCount++;
-        if (newFormData.queryParams.medium) difficultyCount++;
-        if (newFormData.queryParams.hard) difficultyCount++;
-        if (newFormData.queryParams.legendary) difficultyCount++;
+      let difficultyCount = 0;
+      for (const key of Object.keys(newFormData.queryParams.difficulty))
+        if (newFormData.queryParams.difficulty[key as keyof typeof newFormData.queryParams.difficulty])
+          difficultyCount++;
+      
+      const field = fieldName.split(".")[1];
 
-        const field = fieldName.split(".")[1];
-
-        if (
-          (typeCount === 1 && ["limit", "derivative", "integral"].includes(field)) ||
-          (difficultyCount === 1 && ["easy", "medium", "hard", "legendary"].includes(field))
-        ) {
-          dispatch({ type: "TOGGLE_DIALOG" });
-          return;
-        }
+      if (
+        typeCount === 1 && Object.keys(newFormData.queryParams.type).includes(field) ||
+        difficultyCount === 1 && Object.keys(newFormData.queryParams.difficulty).includes(field)
+      ) {
+        dispatch({ type: "TOGGLE_DIALOG" });
+        return;
       }
     }
 
     if (fieldType === "checkbox" && typeof event === "boolean" && fieldName) {
-      const [parent, child] = fieldName.split(".");
-      if (parent === "queryParams") {
-        switch (child) {
-          case "limit":
-          case "derivative":
-          case "integral":
-          case "easy":
-          case "medium":
-          case "hard":
-          case "legendary":
-            newFormData[parent][child] = event;
-            break;
-        }
-      }
+      const [prefix, suffix] = fieldName.split(".");
+      newFormData.queryParams[prefix][suffix] = event;
     } else if (fieldType === "switch" && typeof event === "boolean") {
-      newFormData["autoskip"] = event;
+      newFormData.autoskip = event;
     } else if (fieldType === "radio" && typeof event === "number") {
-      newFormData["autoskipDelay"] = event;
+      newFormData.autoskipDelay = event;
     }
+
+    const newQueryString = createQueryString(newFormData.queryParams);
 
     dispatch({ type: "UPDATE_FORM_DATA", payload: newFormData });
+    dispatch({ type: "UPDATE_QUERY_STRING", payload: newQueryString });
   }
 
   return (
@@ -111,12 +97,12 @@ export function Form() {
       <div className="flex flex-col gap-2">
         <h3 className="text-lg font-semibold">Tipos</h3>
         <div className="select-none flex flex-col gap-1 px-2">
-          {TYPE_OPTIONS.map((type: TypeOption) => (
+          {QUERY_TYPE_OPTIONS.map((type: QueryTypeOption) => (
             <div key={type.name} className="flex items-center gap-2">
               <Checkbox
                 name={type.name}
-                checked={state.formData.queryParams[type.name.split(".").pop() as keyof typeof state.formData.queryParams]}
-                onChange={(checked) => handleChange(checked, type.name, "checkbox")}
+                checked={state.formData.queryParams.type[type.name.split(".").pop() as keyof typeof state.formData.queryParams.type]}
+                onChange={(checked) => handleChange(checked, "checkbox", type.name)}
                 className="
                   cursor-pointer group size-4 rounded-sm border border-[var(--border)]
                   data-[checked]:border-none bg-[var(--input-unchecked)]
@@ -135,12 +121,12 @@ export function Form() {
       <div className="flex flex-col gap-2">
         <h3 className="text-lg font-semibold">Dificuldades</h3>
         <div className="select-none flex flex-col gap-1 px-2">
-          {DIFFICULTY_OPTIONS.map((type: TypeOption) => (
-            <div key={type.name} className="flex items-center gap-2">
+          {QUERY_DIFFICULTY_OPTIONS.map((difficulty: QueryDifficultyOption) => (
+            <div key={difficulty.name} className="flex items-center gap-2">
               <Checkbox
-                name={type.name}
-                checked={state.formData.queryParams[type.name.split(".").pop() as keyof typeof state.formData.queryParams]}
-                onChange={(checked) => handleChange(checked, type.name, "checkbox")}
+                name={difficulty.name}
+                checked={state.formData.queryParams.difficulty[difficulty.name.split(".").pop() as keyof typeof state.formData.queryParams.difficulty]}
+                onChange={(checked) => handleChange(checked, "checkbox", difficulty.name)}
                 className="
                   cursor-pointer group size-4 rounded-sm border border-[var(--border)]
                   data-[checked]:border-none bg-[var(--input-unchecked)]
@@ -150,7 +136,7 @@ export function Form() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                 </svg>
               </Checkbox>
-              <span>{type.label}</span>
+              <span>{difficulty.label}</span>
             </div>
           ))}
         </div>
@@ -160,7 +146,7 @@ export function Form() {
         <label className="select-none flex items-center gap-2">
           <Switch
             checked={state.formData.autoskip}
-            onChange={(checked) => handleChange(checked, undefined, "switch")}
+            onChange={(checked) => handleChange(checked, "switch", undefined)}
             className="
               cursor-pointer group inline-flex h-5 w-10 items-center rounded-full transition
               bg-[var(--input-unchecked)] data-[checked]:bg-[var(--input-checked)]
@@ -177,7 +163,7 @@ export function Form() {
               <RadioGroup
                 name="autoskipDelay"
                 value={state.formData.autoskipDelay}
-                onChange={(value) => handleChange(value, undefined, "radio")}
+                onChange={(value) => handleChange(value, "radio", undefined)}
                 className="select-none flex flex-col gap-1 px-2"
               >
                 {DELAY_OPTIONS.map((option: DelayOption) => (
@@ -200,36 +186,6 @@ export function Form() {
             </div>
           </div>
         </Transition>
-        {/*
-        {state.formData.autoskip && (
-          <div>
-            <div className="flex flex-col gap-2">
-              <span className="text-lg font-semibold">Intervalo do avanço</span>
-              <RadioGroup
-                name="autoskipDelay"
-                value={state.formData.autoskipDelay}
-                onChange={(value) => handleChange(value, undefined, "radio")}
-                className="select-none flex flex-col gap-1 px-2"
-              >
-                {DELAY_OPTIONS.map((option: DelayOption) => (
-                  <Field key={option.value} className="flex items-center gap-2">
-                    <Radio
-                      value={option.value}
-                      className="
-                        cursor-pointer group size-4 flex items-center justify-center rounded-full
-                        border border-[var(--border)] data-[checked]:border-none
-                        bg-[var(--input-unchecked)] data-[checked]:bg-[var(--input-checked)]
-                    ">
-                      <span className="invisible group-data-[checked]:visible size-2 rounded-full bg-white" />
-                    </Radio>
-                    <Label>{option.label}</Label>
-                  </Field>
-                ))}
-              </RadioGroup>
-            </div>
-          </div>
-        )}
-        */}
       </div>
     </form>
   );

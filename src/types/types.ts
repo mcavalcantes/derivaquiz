@@ -3,7 +3,9 @@ export type UserPreferences = {
   formData: FormData;
 };
 
-export type PageTheme = "light" | "dark";
+export type PageTheme =
+  | "light"
+  | "dark";
 
 export type FormData = {
   autoskip: boolean;
@@ -12,31 +14,38 @@ export type FormData = {
 };
 
 export type QueryParams = {
-  limit: boolean;
-  derivative: boolean;
-  integral: boolean;
-  easy: boolean;
-  medium: boolean;
-  hard: boolean;
-  legendary: boolean;
+  type: {
+    limit: boolean;
+    derivative: boolean;
+    integral: boolean;
+  };
+  difficulty: {
+    easy: boolean;
+    medium: boolean;
+    hard: boolean;
+    legendary: boolean;
+  };
 };
 
 export type Response = {
-  question: {
-    id: number;
-    content: string;
-  };
-  answers: Array<{
-    id: number;
-    content: string;
-    correct: boolean;
-  }>;
+  question: Question;
+  answers: Array<Answer>;
+};
+
+export type Question = {
+  id: number;
+  content: string;
+};
+
+export type Answer = {
+  id: number;
+  content: string;
+  correct: boolean;
 };
 
 export type State = {
-  userPreferences: UserPreferences;
-  pageTheme: PageTheme;
-  formData: FormData;
+  pageTheme: PageTheme; /* stored in localStorage */
+  formData: FormData; /* stored in localStorage */
   queryString: string;
   response: Response | null;
   mobileFormVisible: boolean;
