@@ -37,37 +37,12 @@ export const defaultInitialState: State = {
 
 export function appReducer(state: State, action: Action): State {
   switch (action.type) {
-    case "LOAD_USER_PREFERENCES": {
-      const stored = localStorage.getItem("userPreferences");
-
-      if (stored) {
-        const userPreferences: UserPreferences = JSON.parse(stored);
-        return {
-          ...state,
-          pageTheme: userPreferences.pageTheme,
-          formData: userPreferences.formData,
-        };
-      }
-
-      return {
-        ...state,
-        pageTheme: defaultUserPreferences.pageTheme,
-        formData: defaultUserPreferences.formData,
-      };
-    }
-
     case "UPDATE_PAGE_THEME": {
-      return {
-        ...state,
-        pageTheme: action.payload,
-      };
+      return { ...state, pageTheme: action.payload };
     }
 
     case "UPDATE_FORM_DATA": {
-      return {
-        ...state,
-        formData: action.payload,
-      };
+      return { ...state, formData: action.payload };
     }
 
     case "UPDATE_QUERY_STRING": {

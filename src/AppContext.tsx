@@ -15,6 +15,8 @@ import { createQueryString } from "@/lib/createQueryString";
 import { getQuestion } from "@/lib/getQuestion";
 
 import type {
+  PageTheme,
+  FormData,
   State,
   Action,
 } from "@/types/types";
@@ -36,24 +38,38 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, defaultInitialState);
 
   useEffect(() => {
-    dispatch({ type: "LOAD_USER_PREFERENCES" });
+    const storedPageTheme = localStorage.getItem("pageTheme");
+    const pageTheme: PageTheme = JSON.parse(storedPageTheme || JSON.stringify(state.pageTheme));
+
+    if (pageTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+    localStorage.setItem("pageTheme", JSON.stringify(pageTheme));
+    dispatch({ type: "UPDATE_PAGE_THEME", payload: pageTheme });
+
+    const storedFormData = localStorage.getItem("formData");
+    const formData: FormData = JSON.parse(storedFormData || JSON.stringify(state.formData));
+
+    localStorage.setItem("formData", JSON.stringify(formData));
+    dispatch({ type: "UPDATE_FORM_DATA", payload: formData });
   }, []);
 
   useEffect(() => {
-    dispatch({ type: "UPDATE_PAGE_THEME", payload: state.pageTheme });
-  }, []);
+    if (state.pageTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+    localStorage.setItem("pageTheme", JSON.stringify(state.pageTheme));
+  }, [state.pageTheme]);
 
   useEffect(() => {
-    dispatch({ type: "UPDATE_FORM_DATA", payload: state.formData });
-  }, []);
-
-  useEffect(() => {
-    const queryString = createQueryString(state.formData.queryParams);
-    dispatch({
-      type: "UPDATE_QUERY_STRING",
-      payload: queryString,
-    });
-  }, []);
+    localStorage.setItem("formData", JSON.stringify(state.formData));
+  }, [state.formData]);
 
   useEffect(() => {
     const initialize = async () => {

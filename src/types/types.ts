@@ -53,7 +53,8 @@ export type State = {
 };
 
 export type Action =
-  | { type: "LOAD_USER_PREFERENCES" }
+  | { type: "LOAD_PAGE_THEME" }
+  | { type: "LOAD_FORM_DATA" }
   | { type: "UPDATE_PAGE_THEME"; payload: PageTheme }
   | { type: "UPDATE_FORM_DATA"; payload: FormData }
   | { type: "UPDATE_QUERY_STRING"; payload: string }

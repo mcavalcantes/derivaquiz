@@ -51,7 +51,7 @@ function AppContent() {
         <div className="fixed inset-0 z-100 w-screen overflow-y-auto">
           <DialogBackdrop
             transition
-            className="z-50 fixed inset-0 transition data-[closed]:opacity-0 bg-gray-800/80 dark:bg-stone-800/80"
+            className="z-50 fixed inset-0 transition data-[closed]:opacity-0 bg-gray-800/80 dark:bg-stone-900/90"
           />
           <div className="transition flex min-h-full items-center justify-center p-4">
             <DialogPanel
@@ -86,10 +86,10 @@ function AppContent() {
 
       <Transition show={state.mobileFormVisible}>
         <div className="
-          fixed inset-0 bg-stone-900/90 z-100 xl:hidden flex items-center justify-center p-4
-          data-[enter]:opacity-0 data-[leave]:opacity-0 transition
+          fixed inset-0 bg-gray-800/80 dark:bg-stone-900/90 p-8 z-100 xl:hidden
+          flex items-center justify-center data-[enter]:opacity-0 data-[leave]:opacity-0 transition
         ">
-          <div className="bg-[var(--foreground)] rounded-lg p-4 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-[var(--foreground)] flex flex-col gap-4 rounded-lg p-4 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold">Menu</h2>
               <button 
@@ -124,8 +124,23 @@ function AppContent() {
         <Form />
       </div>
       
-      <main className="flex flex-col gap-4 px-8 md:px-40 xl:px-100">
+      <main className="flex flex-col gap-2 px-8 md:px-40 xl:px-100">
         <Display content={state.response?.question.content} />
+        <div className="flex items-center justify-end h-8">
+          <Transition show={!state.formData.autoskip}>
+            <button className="
+              transition ease-out duration-150 data-[enter]:opacity-0 data-[leave]:opacity-0
+              select-none cursor-pointer text-sm font-semibold rounded-md
+              bg-[var(--foreground)] border border-[var(--border)]
+              flex items-center justify-center gap-0.5 h-8 w-24
+            ">
+              <p>Próxima</p>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </button>
+          </Transition>
+        </div>
         <ul className="grid gap-4">
           {state.response?.answers.map(item => (
             <li key={item.id}>
@@ -138,7 +153,7 @@ function AppContent() {
         </ul>
       </main>
       
-      <footer className="mt-auto h-16 select-none flex items-center justify-center gap-1 text-xs font-semibold">
+      <footer className="mt-auto h-12 select-none flex items-center justify-center gap-1 text-xs font-semibold">
         <a
           href="mailto:matheuscavalcantes.mc@gmail.com"
           className="underline underline-offset-2"
