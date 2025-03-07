@@ -16,18 +16,18 @@ export function Answer({
   const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
-    katex.render(content, buttonRef.current as HTMLButtonElement);
-    
-    const btn = buttonRef.current;
-    if (btn) {
-      btn.classList.remove(
+    if (buttonRef.current) {
+      katex.render(content, buttonRef.current);
+
+      buttonRef.current.classList.remove(
         "border-[var(--feedback-correct)]", 
         "border-[var(--feedback-incorrect)]", 
         "ring-2", 
         "ring-[var(--feedback-correct)]", 
         "ring-[var(--feedback-incorrect)]",
       );
-      btn.classList.add("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
+      
+      buttonRef.current.classList.add("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
     }
   }, [content]);
 

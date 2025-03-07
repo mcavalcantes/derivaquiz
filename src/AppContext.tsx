@@ -96,6 +96,27 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: "UPDATE_QUERY_STRING", payload: queryString });
   }, [state.formData]);
 
+  function updateButtonStyles(button: HTMLButtonElement, correct: boolean) {
+    button.classList.remove("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
+  
+    if (correct) {
+      button.classList.add("border-[var(--feedback-correct)]", "ring-2", "ring-[var(--feedback-correct)]");
+    } else {
+      button.classList.add("border-[var(--feedback-incorrect)]", "ring-2", "ring-[var(--feedback-incorrect)]");
+    }
+  }
+  
+  function resetButtonStyles(button: HTMLButtonElement) {
+    button.classList.remove(
+      "border-[var(--feedback-correct)]",
+      "border-[var(--feedback-incorrect)]",
+      "ring-2",
+      "ring-[var(--feedback-correct)]",
+      "ring-[var(--feedback-incorrect)]",
+    );
+    button.classList.add("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
+  }
+
   const refreshQuestion = useCallback(async () => {
     const json = await getQuestion(state.queryString);
     dispatch({ type: "UPDATE_RESPONSE", payload: json });
@@ -103,14 +124,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const manualSkip = useCallback(async () => {
     document.querySelectorAll(".answer-button").forEach(btn => {
-      btn.classList.remove(
-        "border-[var(--feedback-correct)]",
-        "border-[var(--feedback-incorrect)]",
-        "ring-2",
-        "ring-[var(--feedback-correct)]",
-        "ring-[var(--feedback-incorrect)]",
-      );
-      btn.classList.add("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
+      resetButtonStyles(btn as HTMLButtonElement);
     });
 
     await refreshQuestion();
@@ -128,13 +142,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     dispatch({ type: "TOGGLE_ANSWER_CLICKS" });
 
-    btn.classList.remove("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
-
-    if (correct) {
-      btn.classList.add("border-[var(--feedback-correct)]", "ring-2", "ring-[var(--feedback-correct)]");
-    } else {
-      btn.classList.add("border-[var(--feedback-incorrect)]", "ring-2", "ring-[var(--feedback-incorrect)]");
-    }
+    updateButtonStyles(btn, correct);
 
     if (state.formData.autoskip) {
       if (timeoutRef.current !== null) {
@@ -143,14 +151,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       timeoutRef.current = window.setTimeout(async () => {
         if (buttonRef.current) {
-          buttonRef.current.classList.remove(
-            "border-[var(--feedback-correct)]",
-            "border-[var(--feedback-incorrect)]",
-            "ring-2",
-            "ring-[var(--feedback-correct)]",
-            "ring-[var(--feedback-incorrect)]",
-          );
-          buttonRef.current.classList.add("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
+          resetButtonStyles(buttonRef.current);
         }
         
         await refreshQuestion();
