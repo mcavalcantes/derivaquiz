@@ -10,15 +10,11 @@ export function Answer({
   content?: string,
   correct?: boolean,
 }) {
-  const { handleAnswerClick } = useApp();
+  const { state, handleAnswerClick } = useApp();
 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const timeoutRef = useRef<number | null>(null);
 
-  /* the classList manipulation below is probably redundant, since it already
-   * happens on the AppContext file. no bugs so far, so i won't change this.
-   * "if it works, don't touch it."
-   */
   useEffect(() => {
     katex.render(content, buttonRef.current as HTMLButtonElement);
     
@@ -39,8 +35,9 @@ export function Answer({
     <button 
       ref={buttonRef} 
       onClick={() => handleAnswerClick(buttonRef, timeoutRef, correct)} 
+      disabled={state.answerClicksBlocked}
       className="
-        select-none cursor-pointer h-20 w-full grid place-items-center
+        answer-button select-none cursor-pointer h-20 w-full grid place-items-center
         border rounded-md bg-[var(--foreground)] xl:text-lg transition
         border-[var(--border)] hover:ring ring-[var(--ring)]
       "

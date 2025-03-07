@@ -95,16 +95,28 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const queryString: string = createQueryString(state.formData.queryParams);
     dispatch({ type: "UPDATE_QUERY_STRING", payload: queryString });
   }, [state.formData]);
-  
+
   const refreshQuestion = useCallback(async () => {
     const json = await getQuestion(state.queryString);
     dispatch({ type: "UPDATE_RESPONSE", payload: json });
-  }, []);
+  }, [state.queryString]);
 
   const manualSkip = useCallback(async () => {
+    document.querySelectorAll(".answer-button").forEach(btn => {
+      btn.classList.remove(
+        "border-[var(--feedback-correct)]",
+        "border-[var(--feedback-incorrect)]",
+        "ring-2",
+        "ring-[var(--feedback-correct)]",
+        "ring-[var(--feedback-incorrect)]",
+      );
+      btn.classList.add("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
+    });
+
     await refreshQuestion();
     dispatch({ type: "TOGGLE_SKIP_BUTTON" });
-  }, []);
+    dispatch({ type: "TOGGLE_ANSWER_CLICKS" });
+  }, [refreshQuestion]);
   
   const handleAnswerClick = useCallback(async (
     buttonRef: React.RefObject<HTMLButtonElement | null>,
@@ -114,7 +126,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const btn = buttonRef.current as HTMLButtonElement;
     if (!btn) return;
 
-    /* BLOCK OTHER CLICKS */
+    dispatch({ type: "TOGGLE_ANSWER_CLICKS" });
 
     btn.classList.remove("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
 
@@ -142,6 +154,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
         
         await refreshQuestion();
+        dispatch({ type: "TOGGLE_ANSWER_CLICKS" });
         timeoutRef.current = null;
       }, state.formData.autoskipDelay);
     } else {
