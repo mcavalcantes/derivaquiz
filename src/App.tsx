@@ -19,6 +19,7 @@ import {
   DialogTitle,
   Transition,
 } from "@headlessui/react";
+import { QuestionMark } from "@/icons/heroicons/QuestionMark";
 
 function AppContent() {
   const { state, dispatch, manualSkip } = useApp();
@@ -40,6 +41,13 @@ function AppContent() {
           className="p-0.5 z-50 cursor-pointer border border-[var(--border)] rounded"
         >
           {state.pageTheme === "dark" ? <Sun /> : <Moon />}
+        </button>
+        <button
+          onClick={() => dispatch({ type: "TOGGLE_TUTORIAL" })}
+          className="flex items-center z-50 cursor-pointer border border-[var(--border)] rounded py-0.5 px-1 gap-1"
+        >
+          <QuestionMark />
+          <p>Como jogar</p>
         </button>
       </header>
 
@@ -83,6 +91,87 @@ function AppContent() {
           </div>
         </div>
       </Dialog>
+
+      <Transition show={state.tutorialVisible}>
+        <div className="
+          fixed inset-0 bg-gray-800/80 dark:bg-stone-900/90 p-8 z-100
+          flex items-center justify-center data-[enter]:opacity-0 data-[leave]:opacity-0 transition
+        ">
+          <div className="bg-[var(--foreground)] flex flex-col gap-4 rounded-lg p-4 w-full max-w-md xl:max-w-xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold">Como jogar</h2>
+              <button 
+                onClick={() => dispatch({ type: "TOGGLE_TUTORIAL" })}
+                className="cursor-pointer size-8 flex items-center justify-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="flex flex-col gap-4 select-none">
+              <h3 className="font-semibold">Bem-vindo(a) ao DerivaQuiz, sua ferramenta de estudos para cálculo!</h3>
+              <p>
+                O jogo é simples: responda à questão exibida na tela principal clicando em uma das três respostas
+                que aparecem logo abaixo. Cada questão pode ser um limite, uma derivada, ou integral (você que escolhe!)
+              </p>
+
+              <p>
+                Dessa forma, você consegue aprender como resolvê-los de forma rápida e eficiente, algo que te ajuda
+                na hora de fazer provas ou outros problemas que exigem o cálculo de limites, derivadas, e integrais.
+              </p>
+
+              <p>
+                Personalize seu estudo através do menu ao lado da página (ou clicando em <Cog className="size-6 inline" /> caso esteja no celular)
+              </p>
+
+              <p>
+                Após responder a questão, um feedback visual surgirá para averiguar sua
+                resposta: verde para correta, vermelho para incorreta. Desative a funcionalidade
+                "avançar automaticamente" caso queira avanço manual após responder.
+              </p>
+
+              <h3 className="font-semibold">Dificuldades</h3>
+              <ul className="flex flex-col gap-1 list-disc list-inside pl-2">
+                <li>Fáceis: problemas simples que testam as bases do seu entendimento sobre o assunto</li>
+                <li>Médias: questões que misturam conceitos e envolvem regras diferentes para serem resolvidas</li>
+                <li>Difíceis: costumam levar mais de uma tentativa para acertá-las, resolver a maioria dessas vai te deixar preparado pra qualquer prova</li>
+                <li>Lendárias: questões bem difíceis ou trabalhosas, que geralmente demoram pra sair ou dependem de uma sacada especial</li>
+              </ul>
+
+              <h3 className="font-semibold">Sobre</h3>
+              <p>
+                Atualmente, o banco de dados tem uma quantidade de questões e funcionalidades limitadas,
+                porque <span className="line-through">sou preguiçoso msm</span> ando meio sem tempo ultimamente.
+                Fiz esse aplicativo nessas últimas férias pra passar tempo. 
+              </p>
+              <p>
+                Sinta-se livre para <a
+                  href="mailto:matheuscavalcante@alunos.utfpr.edu.br" className="underline underline-offset-2 text-blue-600 dark:text-blue-400"
+                >
+                  sugerir ideias
+                </a>
+                , novas questões, ou mesmo contribuir diretamente, há um link do repositório ali no rodapé da página.
+              </p>
+            </div>
+
+            
+            <div className="flex justify-end">
+              <button
+                onClick={() => dispatch({ type: "TOGGLE_TUTORIAL" })}
+                className="
+                  cursor-pointer px-4 py-2 font-semibold border border-gray-300 shadow shadow-gray-300 hover:bg-gray-100 transition
+                  dark:border-stone-400 dark:shadow-stone-900 dark:hover:bg-stone-600
+                  rounded-lg flex items-center justify-center
+                "
+              >
+                Entendido
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
 
       <Transition show={state.mobileFormVisible}>
         <div className="
@@ -131,7 +220,7 @@ function AppContent() {
             <button
               onClick={manualSkip}
               className="
-                transition ease-out duration-150 data-[enter]:opacity-0 data-[leave]:opacity-0
+                transition ease-out duration-50 data-[enter]:opacity-0 data-[leave]:opacity-0
                 select-none cursor-pointer text-sm font-semibold rounded-md
                 bg-[var(--foreground)] border border-[var(--border)]
                 flex items-center justify-center gap-0.5 h-8 w-24

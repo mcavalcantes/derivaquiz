@@ -47,6 +47,7 @@ export type State = {
   dialogVisible: boolean;
   skipButtonVisible: boolean;
   answerClicksBlocked: boolean;
+  tutorialVisible: boolean;
 };
 
 export type Action =
@@ -57,4 +58,5 @@ export type Action =
   | { type: "TOGGLE_MOBILE_FORM" }
   | { type: "TOGGLE_DIALOG" }
   | { type: "TOGGLE_SKIP_BUTTON" }
-  | { type: "TOGGLE_ANSWER_CLICKS" };
+  | { type: "TOGGLE_ANSWER_CLICKS" }
+  | { type: "TOGGLE_TUTORIAL" };

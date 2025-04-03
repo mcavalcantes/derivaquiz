@@ -39,6 +39,7 @@ export const defaultInitialState: State = {
   dialogVisible: false,
   skipButtonVisible: false,
   answerClicksBlocked: false,
+  tutorialVisible: false,
 };
 
 export function appReducer(state: State, action: Action): State {
@@ -73,6 +74,10 @@ export function appReducer(state: State, action: Action): State {
 
     case "TOGGLE_ANSWER_CLICKS": {
       return { ...state, answerClicksBlocked: !state.answerClicksBlocked };
+    }
+    
+    case "TOGGLE_TUTORIAL": {
+      return { ...state, tutorialVisible: !state.tutorialVisible };
     }
 
     default: {
