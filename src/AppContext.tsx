@@ -65,6 +65,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       } else {
         localStorage.setItem("formData", JSON.stringify(state.formData));
       }
+
+      if (!storedPageTheme || !storedFormData) {
+        dispatch({ type: "TOGGLE_TUTORIAL" });
+      }
       
       return newState.queryString;
     };
