@@ -142,9 +142,9 @@ function AppContent() {
 
               <h3 className="font-semibold">Sobre</h3>
               <p>
-                Atualmente, o banco de dados tem uma quantidade de questões e funcionalidades limitadas,
-                porque <span className="line-through">sou preguiçoso msm</span> ando meio sem tempo ultimamente.
-                Fiz esse aplicativo nessas últimas férias pra passar tempo. 
+                Atualmente, o banco de dados tem uma quantidade relativamente pequena de questões
+                porque dá bastante trabalho digitar todas elas manualmente em LaTeX, além das três respostas
+                para cada uma delas, e eu ando meio sem tempo ultimamente.
               </p>
               <p>
                 Sinta-se livre para <a
@@ -152,7 +152,7 @@ function AppContent() {
                 >
                   sugerir ideias
                 </a>
-                , novas questões, ou mesmo contribuir diretamente, há um link do repositório ali no rodapé da página.
+                , novas questões, ou mesmo contribuir diretamente, o link do repositório está ali no rodapé da página.
               </p>
             </div>
 
