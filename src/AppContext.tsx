@@ -133,7 +133,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     await refreshQuestion();
     dispatch({ type: "TOGGLE_SKIP_BUTTON" });
-    dispatch({ type: "TOGGLE_ANSWER_CLICKS" });
   }, [refreshQuestion]);
   
   const handleAnswerClick = useCallback(async (
@@ -144,11 +143,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const btn = buttonRef.current as HTMLButtonElement;
     if (!btn) return;
 
-    dispatch({ type: "TOGGLE_ANSWER_CLICKS" });
+    // dispatch({ type: "TOGGLE_ANSWER_CLICKS" });
 
     updateButtonStyles(btn, correct);
 
     if (state.formData.autoskip) {
+      dispatch({ type: "TOGGLE_ANSWER_CLICKS" });
+
       if (timeoutRef.current !== null) {
         clearTimeout(timeoutRef.current);
       }
@@ -163,9 +164,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         timeoutRef.current = null;
       }, state.formData.autoskipDelay);
     } else {
-      dispatch({ type: "TOGGLE_SKIP_BUTTON" });
+      if (!state.skipButtonVisible) {
+        dispatch({ type: "TOGGLE_SKIP_BUTTON" });
+      }
     }
-  }, [state.formData.autoskip, state.formData.autoskipDelay, refreshQuestion]);
+  }, [state.formData.autoskip, state.formData.autoskipDelay, state.skipButtonVisible, refreshQuestion]);
   
   return (
     <AppContext.Provider value={{ state, dispatch, refreshQuestion, manualSkip, handleAnswerClick }}>
