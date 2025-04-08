@@ -133,8 +133,8 @@ function AppContent() {
               </p>
 
               <p>
-                O avanço manual permite que você marque outras respostas, isso é útil quando você erra
-                e quer tentar de novo.
+                O avanço manual permite que marcar outras alternativas depois de já ter respondido,
+                isso é útil quando você erra e quer tentar de novo.
               </p>
 
               <h3 className="font-semibold">Dificuldades</h3>

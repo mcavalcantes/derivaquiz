@@ -104,9 +104,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     button.classList.remove("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
   
     if (correct) {
-      button.classList.add("border-[var(--feedback-correct)]", "ring-2", "ring-[var(--feedback-correct)]");
+      button.classList.add(
+        "border-[var(--feedback-correct)]",
+        "ring-2",
+        "ring-[var(--feedback-correct)]",
+        "shadow-[inset_0_0_0_1px_rgba(48,240,48,0.8)]",
+      );
     } else {
-      button.classList.add("border-[var(--feedback-incorrect)]", "ring-2", "ring-[var(--feedback-incorrect)]");
+      button.classList.add(
+        "border-[var(--feedback-incorrect)]",
+        "ring-2",
+        "ring-[var(--feedback-incorrect)]",
+        "shadow-[inset_0_0_0_1px_rgba(240,68,68,0.8)]",
+      );
     }
   }
   
@@ -117,6 +127,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       "ring-2",
       "ring-[var(--feedback-correct)]",
       "ring-[var(--feedback-incorrect)]",
+      "shadow-[inset_0_0_0_1px_rgba(48,240,48,0.8)]",
+      "shadow-[inset_0_0_0_1px_rgba(240,68,68,0.8)]",
     );
     button.classList.add("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");
   }
