@@ -29,6 +29,8 @@ export function Answer({
         "ring-2",
         "ring-[var(--feedback-correct)]",
         "ring-[var(--feedback-incorrect)]",
+        "shadow-[inset_0_0_0_1px_rgba(48,240,48,0.8)]",
+        "shadow-[inset_0_0_0_1px_rgba(240,68,68,0.8)]",
       );
       
       btn.classList.add("border-[var(--border)]", "hover:ring", "ring-[var(--ring)]");

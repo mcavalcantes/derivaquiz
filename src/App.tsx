@@ -132,6 +132,11 @@ function AppContent() {
                 "avançar automaticamente" caso queira avanço manual após responder.
               </p>
 
+              <p>
+                O avanço manual permite que marcar outras alternativas depois de já ter respondido,
+                isso é útil quando você erra e quer tentar de novo.
+              </p>
+
               <h3 className="font-semibold">Dificuldades</h3>
               <ul className="flex flex-col gap-1 list-disc list-inside pl-2">
                 <li>Fáceis: problemas simples que testam as bases do seu entendimento sobre o assunto</li>
